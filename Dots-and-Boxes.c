@@ -42,8 +42,8 @@ char board[3][10] = {
     ' ',' ',' ',' ',' ',' ',' ',' ',' ',' '
 };
 
-int score1 = 0;
-int score2 = 0;
+int score1 = 4;
+int score2 = 5;
 char inputS[3] = {'-','-','\0'};
 int inputI;
 
@@ -55,7 +55,9 @@ void printBoard();
 
 void printScore();
 
-void printInput(char inputS[]);
+void printInput();
+
+void printLCD();
 
 void printError(int error);
 
@@ -240,9 +242,10 @@ lcd_init(20);
 while (1)
       {
       startGame();
-      printBoard();
-      printScore();
-      printInput(inputS);
+      printLCD();
+      delay_ms(2000);
+      printError(1);
+      printLCD();
       delay_ms(2000);
       }
 }
@@ -295,20 +298,53 @@ void printScore() {
     lcd_gotoxy(15,0);
     sprintf(buffer, "P1=%d", score1);
     lcd_puts(buffer);
+    PORTB = score1;
     
     lcd_gotoxy(15,1);
     sprintf(buffer, "P2=%d", score2);
     lcd_puts(buffer);
+    PORTC = score2;
     
     lcd_gotoxy(0,0);
 
 }
 
-void printInput(char inputS[]) {
+void printInput() {
     lcd_gotoxy(15,3);
     lcd_puts("N=");
     lcd_gotoxy(17,3);
     lcd_puts(inputS);
     lcd_gotoxy(0,0);
 
+}
+
+void printLCD () {
+    lcd_clear();
+    printBoard();
+    printScore();
+    printInput();
+    lcd_gotoxy(0,0);
+}
+
+void printError(int error) {
+    lcd_clear();
+    PORTB = 0x00;
+    PORTC = 0x00;
+    
+    switch (error) {
+        case 1:
+            lcd_puts("invalid input");
+            break;
+    
+        case 2:
+            lcd_puts("chosen box is taken");
+            break;
+        
+        default: 
+            lcd_puts("unknown error");
+        };
+    lcd_gotoxy(0,2);
+    lcd_puts("press any key \nto continue");
+    scanKeypad();
+    lcd_clear();
 }
