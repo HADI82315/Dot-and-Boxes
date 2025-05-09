@@ -23,12 +23,12 @@ Data Stack size         : 1024
 
 #include <mega64.h>
 
-// Alphanumeric LCD functions
 #include <alcd.h>
 
 #include <delay.h>
 
-// Declare your global variables here
+#include <stdio.h>
+
 char keypad[4][3] = {
     '1','2','3',
     '4','5','6',
@@ -42,11 +42,20 @@ char board[3][10] = {
     ' ',' ',' ',' ',' ',' ',' ',' ',' ',' '
 };
 
+int score1 = 0;
+int score2 = 0;
+
 char scanKeypad();
 
 void startGame();
 
 void printBoard();
+
+void printScore();
+
+void printInput();
+
+void printError(int error);
 
 void main(void)
 {
@@ -230,6 +239,7 @@ while (1)
       {
       startGame();
       printBoard();
+      printScore();
       delay_ms(2000);
       }
 }
@@ -241,6 +251,7 @@ char scanKeypad() {
             PORTD &= ~(1 << row);
             for (col = 0; col < 3; col++) {
                 if (!(PIND & (1 << (col + 4)))) {
+                    delay_ms(200);
                     PORTD |= (1 << row);
                     return keypad[row][col];
                 }
@@ -273,4 +284,16 @@ void printBoard() {
         };    
     };
     lcd_gotoxy(0,0);
+}
+
+void printScore() {
+    char buffer[6];
+    
+    lcd_gotoxy(15,0);
+    sprintf(buffer, "P1=%d", score1);
+    lcd_puts(buffer);
+    
+    lcd_gotoxy(15,1);
+    sprintf(buffer, "P2=%d", score2);
+    lcd_puts(buffer);
 }
