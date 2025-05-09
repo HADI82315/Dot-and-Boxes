@@ -119,8 +119,8 @@ WatchAVR8LAutoVariables=0
 UseEEPROMLocation0=1
 RebuildAll=0
 LinkageInformationPresent=1
-COFFileTimeStamp=1521064487
-Build=45
+COFFileTimeStamp=1521065415
+Build=54
 [DefinedSymbolsDebug]
 Count=0
 [Compiler]
@@ -222,7 +222,7 @@ UseEEPROMLocation0=1
 RebuildAll=1
 LinkageInformationPresent=0
 COFFileTimeStamp=-1
-Build=45
+Build=54
 [DefinedSymbols]
 Count=0
 [CompilerAdvanced]
@@ -338,10 +338,10 @@ L13=Enhanced function parameters passing: Yes
 L14=Automatic register allocation: Yes
 L15=Smart register allocation: Yes
 L16=
-L17=Build: 45
-L18=12282 line(s) compiled
+L17=Build: 54
+L18=12291 line(s) compiled
 L19=No errors
-L20=2 warning(s)
+L20=4 warning(s)
 L21=
 L22=Bit variables size: 0 byte(s)
 L23=
@@ -358,19 +358,19 @@ L33=
 L34=Heap size: 0 byte(s)
 L35=
 L36=EEPROM usage: 0 byte(s), 0.0% of EEPROM
-L37=Program size: 1317 words (2634 bytes), 4.0% of FLASH
+L37=Program size: 1330 words (2660 bytes), 4.1% of FLASH
 L38=54 words (108 bytes), 3.9% reduced by Code Compression
 Lines=38
 [BuildInfoAssembler]
 L1=AVRASM: AVR macro assembler 2.1.30 (build 592 Nov  7 2008 12:38:17)
 L2=Copyright (C) 1995-2008 ATMEL Corporation
 L3=
-L4=E:\microlab\Dots-and-Boxes\Debug\List\Dots-and-Boxes.asm(2934): No EEPROM data, deleting E:\microlab\Dots-and-Boxes\Debug\Exe\Dots-and-Boxes.eep
+L4=E:\microlab\Dots-and-Boxes\Debug\List\Dots-and-Boxes.asm(2954): No EEPROM data, deleting E:\microlab\Dots-and-Boxes\Debug\Exe\Dots-and-Boxes.eep
 L5=
 L6=ATmega64 memory use summary [bytes]:
 L7=Segment   Begin    End      Code   Data   Used    Size   Use%
 L8=---------------------------------------------------------------
-L9=[.cseg] 0x000000 0x000a4a   2346    288   2634   65536   4.0%
+L9=[.cseg] 0x000000 0x000a64   2372    288   2660   65536   4.1%
 L10=[.dseg] 0x000100 0x0005a7      0    167    167    4096   4.1%
 L11=[.eseg] 0x000000 0x000000      0      0      0    2048   0.0%
 L12=

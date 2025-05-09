@@ -49,6 +49,8 @@ int turn = 1;
 char symbol = '*';
 
 char inputS[3] = {'-','-','\0'};
+char firstDigit;
+char secondDigit;
 int inputI;
 
 char scanKeypad();
@@ -250,8 +252,15 @@ while (1)
       startGame();
       printLCD();
       symbol = (turn == 1) ? '*' : '#';
-      delay_ms(1000);
-      
+      do {
+        inputS[0] = '-', inputS[1] = '-';
+        printInput();
+        inputS[0] = scanKeypad();
+        printInput();
+        inputS[1] = scanKeypad();
+        printInput();
+
+        } while (scanKeypad() != '*');
       }
 }
 
@@ -262,7 +271,7 @@ char scanKeypad() {
             PORTD &= ~(1 << row);
             for (col = 0; col < 3; col++) {
                 if (!(PIND & (1 << (col + 4)))) {
-                    delay_ms(200);
+                    delay_ms(250);
                     PORTD |= (1 << row);
                     return keypad[row][col];
                 }

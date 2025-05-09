@@ -1093,9 +1093,9 @@ __DELAY_USW_LOOP:
 	.DEF _turn=R8
 	.DEF _turn_msb=R9
 	.DEF _symbol=R11
-	.DEF _inputI=R12
-	.DEF _inputI_msb=R13
-	.DEF __lcd_x=R10
+	.DEF _firstDigit=R10
+	.DEF _secondDigit=R13
+	.DEF __lcd_x=R12
 
 	.CSEG
 	.ORG 0x00
@@ -1200,39 +1200,39 @@ __GLOBAL_INI_TBL:
 	.DW  _0x5*2
 
 	.DW  0x0E
-	.DW  _0x17
+	.DW  _0x1A
 	.DW  _0x0*2
 
 	.DW  0x09
-	.DW  _0x17+14
+	.DW  _0x1A+14
 	.DW  _0x0*2+14
 
 	.DW  0x0C
-	.DW  _0x18
+	.DW  _0x1B
 	.DW  _0x0*2+23
 
 	.DW  0x03
-	.DW  _0x1F
+	.DW  _0x22
 	.DW  _0x0*2+49
 
 	.DW  0x03
-	.DW  _0x20
+	.DW  _0x23
 	.DW  _0x0*2+52
 
 	.DW  0x0E
-	.DW  _0x25
+	.DW  _0x28
 	.DW  _0x0*2+55
 
 	.DW  0x14
-	.DW  _0x25+14
+	.DW  _0x28+14
 	.DW  _0x0*2+69
 
 	.DW  0x0E
-	.DW  _0x25+34
+	.DW  _0x28+34
 	.DW  _0x0*2+89
 
 	.DW  0x1B
-	.DW  _0x25+48
+	.DW  _0x28+48
 	.DW  _0x0*2+103
 
 	.DW  0x02
@@ -1381,6 +1381,8 @@ __GLOBAL_INI_END:
 ;char symbol = '*';
 ;
 ;char inputS[3] = {'-','-','\0'};
+;char firstDigit;
+;char secondDigit;
 ;int inputI;
 ;
 ;char scanKeypad();
@@ -1400,264 +1402,264 @@ __GLOBAL_INI_END:
 ;void printError(int error);
 ;
 ;void main(void)
-; 0000 0047 {
+; 0000 0049 {
 
 	.CSEG
 _main:
 ; .FSTART _main
-; 0000 0048 {
-; 0000 0049 // Input/Output Ports initialization
-; 0000 004A // Port A initialization
-; 0000 004B // Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In
-; 0000 004C DDRA=(0<<DDA7) | (0<<DDA6) | (0<<DDA5) | (0<<DDA4) | (0<<DDA3) | (0<<DDA2) | (0<<DDA1) | (0<<DDA0);
+; 0000 004A {
+; 0000 004B // Input/Output Ports initialization
+; 0000 004C // Port A initialization
+; 0000 004D // Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In
+; 0000 004E DDRA=(0<<DDA7) | (0<<DDA6) | (0<<DDA5) | (0<<DDA4) | (0<<DDA3) | (0<<DDA2) | (0<<DDA1) | (0<<DDA0);
 	LDI  R30,LOW(0)
 	OUT  0x1A,R30
-; 0000 004D // State: Bit7=T Bit6=T Bit5=T Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T
-; 0000 004E PORTA=(0<<PORTA7) | (0<<PORTA6) | (0<<PORTA5) | (0<<PORTA4) | (0<<PORTA3) | (0<<PORTA2) | (0<<PORTA1) | (0<<PORTA0);
+; 0000 004F // State: Bit7=T Bit6=T Bit5=T Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T
+; 0000 0050 PORTA=(0<<PORTA7) | (0<<PORTA6) | (0<<PORTA5) | (0<<PORTA4) | (0<<PORTA3) | (0<<PORTA2) | (0<<PORTA1) | (0<<PORTA0);
 	OUT  0x1B,R30
-; 0000 004F 
-; 0000 0050 // Port B initialization
-; 0000 0051 // Function: Bit7=In Bit6=In Bit5=In Bit4=Out Bit3=Out Bit2=Out Bit1=Out Bit0=Out
-; 0000 0052 DDRB=(0<<DDB7) | (0<<DDB6) | (0<<DDB5) | (1<<DDB4) | (1<<DDB3) | (1<<DDB2) | (1<<DDB1) | (1<<DDB0);
+; 0000 0051 
+; 0000 0052 // Port B initialization
+; 0000 0053 // Function: Bit7=In Bit6=In Bit5=In Bit4=Out Bit3=Out Bit2=Out Bit1=Out Bit0=Out
+; 0000 0054 DDRB=(0<<DDB7) | (0<<DDB6) | (0<<DDB5) | (1<<DDB4) | (1<<DDB3) | (1<<DDB2) | (1<<DDB1) | (1<<DDB0);
 	LDI  R30,LOW(31)
 	OUT  0x17,R30
-; 0000 0053 // State: Bit7=T Bit6=T Bit5=T Bit4=0 Bit3=0 Bit2=0 Bit1=0 Bit0=0
-; 0000 0054 PORTB=(0<<PORTB7) | (0<<PORTB6) | (0<<PORTB5) | (0<<PORTB4) | (0<<PORTB3) | (0<<PORTB2) | (0<<PORTB1) | (0<<PORTB0);
+; 0000 0055 // State: Bit7=T Bit6=T Bit5=T Bit4=0 Bit3=0 Bit2=0 Bit1=0 Bit0=0
+; 0000 0056 PORTB=(0<<PORTB7) | (0<<PORTB6) | (0<<PORTB5) | (0<<PORTB4) | (0<<PORTB3) | (0<<PORTB2) | (0<<PORTB1) | (0<<PORTB0);
 	LDI  R30,LOW(0)
 	OUT  0x18,R30
-; 0000 0055 
-; 0000 0056 // Port C initialization
-; 0000 0057 // Function: Bit7=In Bit6=In Bit5=In Bit4=Out Bit3=Out Bit2=Out Bit1=Out Bit0=Out
-; 0000 0058 DDRC=(0<<DDC7) | (0<<DDC6) | (0<<DDC5) | (1<<DDC4) | (1<<DDC3) | (1<<DDC2) | (1<<DDC1) | (1<<DDC0);
+; 0000 0057 
+; 0000 0058 // Port C initialization
+; 0000 0059 // Function: Bit7=In Bit6=In Bit5=In Bit4=Out Bit3=Out Bit2=Out Bit1=Out Bit0=Out
+; 0000 005A DDRC=(0<<DDC7) | (0<<DDC6) | (0<<DDC5) | (1<<DDC4) | (1<<DDC3) | (1<<DDC2) | (1<<DDC1) | (1<<DDC0);
 	LDI  R30,LOW(31)
 	OUT  0x14,R30
-; 0000 0059 // State: Bit7=T Bit6=T Bit5=T Bit4=0 Bit3=0 Bit2=0 Bit1=0 Bit0=0
-; 0000 005A PORTC=(0<<PORTC7) | (0<<PORTC6) | (0<<PORTC5) | (0<<PORTC4) | (0<<PORTC3) | (0<<PORTC2) | (0<<PORTC1) | (0<<PORTC0);
+; 0000 005B // State: Bit7=T Bit6=T Bit5=T Bit4=0 Bit3=0 Bit2=0 Bit1=0 Bit0=0
+; 0000 005C PORTC=(0<<PORTC7) | (0<<PORTC6) | (0<<PORTC5) | (0<<PORTC4) | (0<<PORTC3) | (0<<PORTC2) | (0<<PORTC1) | (0<<PORTC0);
 	LDI  R30,LOW(0)
 	OUT  0x15,R30
-; 0000 005B 
-; 0000 005C // Port D initialization
-; 0000 005D // Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=Out Bit2=Out Bit1=Out Bit0=Out
-; 0000 005E DDRD=(0<<DDD7) | (0<<DDD6) | (0<<DDD5) | (0<<DDD4) | (1<<DDD3) | (1<<DDD2) | (1<<DDD1) | (1<<DDD0);
+; 0000 005D 
+; 0000 005E // Port D initialization
+; 0000 005F // Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=Out Bit2=Out Bit1=Out Bit0=Out
+; 0000 0060 DDRD=(0<<DDD7) | (0<<DDD6) | (0<<DDD5) | (0<<DDD4) | (1<<DDD3) | (1<<DDD2) | (1<<DDD1) | (1<<DDD0);
 	LDI  R30,LOW(15)
 	OUT  0x11,R30
-; 0000 005F // State: Bit7=P Bit6=P Bit5=P Bit4=P Bit3=0 Bit2=0 Bit1=0 Bit0=0
-; 0000 0060 PORTD=(1<<PORTD7) | (1<<PORTD6) | (1<<PORTD5) | (1<<PORTD4) | (0<<PORTD3) | (0<<PORTD2) | (0<<PORTD1) | (0<<PORTD0);
+; 0000 0061 // State: Bit7=P Bit6=P Bit5=P Bit4=P Bit3=0 Bit2=0 Bit1=0 Bit0=0
+; 0000 0062 PORTD=(1<<PORTD7) | (1<<PORTD6) | (1<<PORTD5) | (1<<PORTD4) | (0<<PORTD3) | (0<<PORTD2) | (0<<PORTD1) | (0<<PORTD0);
 	LDI  R30,LOW(240)
 	OUT  0x12,R30
-; 0000 0061 
-; 0000 0062 // Port E initialization
-; 0000 0063 // Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In
-; 0000 0064 DDRE=(0<<DDE7) | (0<<DDE6) | (0<<DDE5) | (0<<DDE4) | (0<<DDE3) | (0<<DDE2) | (0<<DDE1) | (0<<DDE0);
+; 0000 0063 
+; 0000 0064 // Port E initialization
+; 0000 0065 // Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In
+; 0000 0066 DDRE=(0<<DDE7) | (0<<DDE6) | (0<<DDE5) | (0<<DDE4) | (0<<DDE3) | (0<<DDE2) | (0<<DDE1) | (0<<DDE0);
 	LDI  R30,LOW(0)
 	OUT  0x2,R30
-; 0000 0065 // State: Bit7=T Bit6=T Bit5=T Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T
-; 0000 0066 PORTE=(0<<PORTE7) | (0<<PORTE6) | (0<<PORTE5) | (0<<PORTE4) | (0<<PORTE3) | (0<<PORTE2) | (0<<PORTE1) | (0<<PORTE0);
+; 0000 0067 // State: Bit7=T Bit6=T Bit5=T Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T
+; 0000 0068 PORTE=(0<<PORTE7) | (0<<PORTE6) | (0<<PORTE5) | (0<<PORTE4) | (0<<PORTE3) | (0<<PORTE2) | (0<<PORTE1) | (0<<PORTE0);
 	OUT  0x3,R30
-; 0000 0067 
-; 0000 0068 // Port F initialization
-; 0000 0069 // Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In
-; 0000 006A DDRF=(0<<DDF7) | (0<<DDF6) | (0<<DDF5) | (0<<DDF4) | (0<<DDF3) | (0<<DDF2) | (0<<DDF1) | (0<<DDF0);
+; 0000 0069 
+; 0000 006A // Port F initialization
+; 0000 006B // Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In
+; 0000 006C DDRF=(0<<DDF7) | (0<<DDF6) | (0<<DDF5) | (0<<DDF4) | (0<<DDF3) | (0<<DDF2) | (0<<DDF1) | (0<<DDF0);
 	STS  97,R30
-; 0000 006B // State: Bit7=T Bit6=T Bit5=T Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T
-; 0000 006C PORTF=(0<<PORTF7) | (0<<PORTF6) | (0<<PORTF5) | (0<<PORTF4) | (0<<PORTF3) | (0<<PORTF2) | (0<<PORTF1) | (0<<PORTF0);
+; 0000 006D // State: Bit7=T Bit6=T Bit5=T Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T
+; 0000 006E PORTF=(0<<PORTF7) | (0<<PORTF6) | (0<<PORTF5) | (0<<PORTF4) | (0<<PORTF3) | (0<<PORTF2) | (0<<PORTF1) | (0<<PORTF0);
 	STS  98,R30
-; 0000 006D 
-; 0000 006E // Port G initialization
-; 0000 006F // Function: Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In
-; 0000 0070 DDRG=(0<<DDG4) | (0<<DDG3) | (0<<DDG2) | (0<<DDG1) | (0<<DDG0);
+; 0000 006F 
+; 0000 0070 // Port G initialization
+; 0000 0071 // Function: Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In
+; 0000 0072 DDRG=(0<<DDG4) | (0<<DDG3) | (0<<DDG2) | (0<<DDG1) | (0<<DDG0);
 	STS  100,R30
-; 0000 0071 // State: Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T
-; 0000 0072 PORTG=(0<<PORTG4) | (0<<PORTG3) | (0<<PORTG2) | (0<<PORTG1) | (0<<PORTG0);
+; 0000 0073 // State: Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T
+; 0000 0074 PORTG=(0<<PORTG4) | (0<<PORTG3) | (0<<PORTG2) | (0<<PORTG1) | (0<<PORTG0);
 	STS  101,R30
-; 0000 0073 
-; 0000 0074 // Timer/Counter 0 initialization
-; 0000 0075 // Clock source: System Clock
-; 0000 0076 // Clock value: Timer 0 Stopped
-; 0000 0077 // Mode: Normal top=0xFF
-; 0000 0078 // OC0 output: Disconnected
-; 0000 0079 ASSR=0<<AS0;
+; 0000 0075 
+; 0000 0076 // Timer/Counter 0 initialization
+; 0000 0077 // Clock source: System Clock
+; 0000 0078 // Clock value: Timer 0 Stopped
+; 0000 0079 // Mode: Normal top=0xFF
+; 0000 007A // OC0 output: Disconnected
+; 0000 007B ASSR=0<<AS0;
 	OUT  0x30,R30
-; 0000 007A TCCR0=(0<<WGM00) | (0<<COM01) | (0<<COM00) | (0<<WGM01) | (0<<CS02) | (0<<CS01) | (0<<CS00);
+; 0000 007C TCCR0=(0<<WGM00) | (0<<COM01) | (0<<COM00) | (0<<WGM01) | (0<<CS02) | (0<<CS01) | (0<<CS00);
 	OUT  0x33,R30
-; 0000 007B TCNT0=0x00;
+; 0000 007D TCNT0=0x00;
 	OUT  0x32,R30
-; 0000 007C OCR0=0x00;
+; 0000 007E OCR0=0x00;
 	OUT  0x31,R30
-; 0000 007D 
-; 0000 007E // Timer/Counter 1 initialization
-; 0000 007F // Clock source: System Clock
-; 0000 0080 // Clock value: Timer1 Stopped
-; 0000 0081 // Mode: Normal top=0xFFFF
-; 0000 0082 // OC1A output: Disconnected
-; 0000 0083 // OC1B output: Disconnected
-; 0000 0084 // OC1C output: Disconnected
-; 0000 0085 // Noise Canceler: Off
-; 0000 0086 // Input Capture on Falling Edge
-; 0000 0087 // Timer1 Overflow Interrupt: Off
-; 0000 0088 // Input Capture Interrupt: Off
-; 0000 0089 // Compare A Match Interrupt: Off
-; 0000 008A // Compare B Match Interrupt: Off
-; 0000 008B // Compare C Match Interrupt: Off
-; 0000 008C TCCR1A=(0<<COM1A1) | (0<<COM1A0) | (0<<COM1B1) | (0<<COM1B0) | (0<<COM1C1) | (0<<COM1C0) | (0<<WGM11) | (0<<WGM10);
+; 0000 007F 
+; 0000 0080 // Timer/Counter 1 initialization
+; 0000 0081 // Clock source: System Clock
+; 0000 0082 // Clock value: Timer1 Stopped
+; 0000 0083 // Mode: Normal top=0xFFFF
+; 0000 0084 // OC1A output: Disconnected
+; 0000 0085 // OC1B output: Disconnected
+; 0000 0086 // OC1C output: Disconnected
+; 0000 0087 // Noise Canceler: Off
+; 0000 0088 // Input Capture on Falling Edge
+; 0000 0089 // Timer1 Overflow Interrupt: Off
+; 0000 008A // Input Capture Interrupt: Off
+; 0000 008B // Compare A Match Interrupt: Off
+; 0000 008C // Compare B Match Interrupt: Off
+; 0000 008D // Compare C Match Interrupt: Off
+; 0000 008E TCCR1A=(0<<COM1A1) | (0<<COM1A0) | (0<<COM1B1) | (0<<COM1B0) | (0<<COM1C1) | (0<<COM1C0) | (0<<WGM11) | (0<<WGM10);
 	OUT  0x2F,R30
-; 0000 008D TCCR1B=(0<<ICNC1) | (0<<ICES1) | (0<<WGM13) | (0<<WGM12) | (0<<CS12) | (0<<CS11) | (0<<CS10);
+; 0000 008F TCCR1B=(0<<ICNC1) | (0<<ICES1) | (0<<WGM13) | (0<<WGM12) | (0<<CS12) | (0<<CS11) | (0<<CS10);
 	OUT  0x2E,R30
-; 0000 008E TCNT1H=0x00;
+; 0000 0090 TCNT1H=0x00;
 	OUT  0x2D,R30
-; 0000 008F TCNT1L=0x00;
+; 0000 0091 TCNT1L=0x00;
 	OUT  0x2C,R30
-; 0000 0090 ICR1H=0x00;
+; 0000 0092 ICR1H=0x00;
 	OUT  0x27,R30
-; 0000 0091 ICR1L=0x00;
+; 0000 0093 ICR1L=0x00;
 	OUT  0x26,R30
-; 0000 0092 OCR1AH=0x00;
+; 0000 0094 OCR1AH=0x00;
 	OUT  0x2B,R30
-; 0000 0093 OCR1AL=0x00;
+; 0000 0095 OCR1AL=0x00;
 	OUT  0x2A,R30
-; 0000 0094 OCR1BH=0x00;
+; 0000 0096 OCR1BH=0x00;
 	OUT  0x29,R30
-; 0000 0095 OCR1BL=0x00;
+; 0000 0097 OCR1BL=0x00;
 	OUT  0x28,R30
-; 0000 0096 OCR1CH=0x00;
+; 0000 0098 OCR1CH=0x00;
 	STS  121,R30
-; 0000 0097 OCR1CL=0x00;
+; 0000 0099 OCR1CL=0x00;
 	STS  120,R30
-; 0000 0098 
-; 0000 0099 // Timer/Counter 2 initialization
-; 0000 009A // Clock source: System Clock
-; 0000 009B // Clock value: Timer2 Stopped
-; 0000 009C // Mode: Normal top=0xFF
-; 0000 009D // OC2 output: Disconnected
-; 0000 009E TCCR2=(0<<WGM20) | (0<<COM21) | (0<<COM20) | (0<<WGM21) | (0<<CS22) | (0<<CS21) | (0<<CS20);
+; 0000 009A 
+; 0000 009B // Timer/Counter 2 initialization
+; 0000 009C // Clock source: System Clock
+; 0000 009D // Clock value: Timer2 Stopped
+; 0000 009E // Mode: Normal top=0xFF
+; 0000 009F // OC2 output: Disconnected
+; 0000 00A0 TCCR2=(0<<WGM20) | (0<<COM21) | (0<<COM20) | (0<<WGM21) | (0<<CS22) | (0<<CS21) | (0<<CS20);
 	OUT  0x25,R30
-; 0000 009F TCNT2=0x00;
+; 0000 00A1 TCNT2=0x00;
 	OUT  0x24,R30
-; 0000 00A0 OCR2=0x00;
+; 0000 00A2 OCR2=0x00;
 	OUT  0x23,R30
-; 0000 00A1 
-; 0000 00A2 // Timer/Counter 3 initialization
-; 0000 00A3 // Clock source: System Clock
-; 0000 00A4 // Clock value: Timer3 Stopped
-; 0000 00A5 // Mode: Normal top=0xFFFF
-; 0000 00A6 // OC3A output: Disconnected
-; 0000 00A7 // OC3B output: Disconnected
-; 0000 00A8 // OC3C output: Disconnected
-; 0000 00A9 // Noise Canceler: Off
-; 0000 00AA // Input Capture on Falling Edge
-; 0000 00AB // Timer3 Overflow Interrupt: Off
-; 0000 00AC // Input Capture Interrupt: Off
-; 0000 00AD // Compare A Match Interrupt: Off
-; 0000 00AE // Compare B Match Interrupt: Off
-; 0000 00AF // Compare C Match Interrupt: Off
-; 0000 00B0 TCCR3A=(0<<COM3A1) | (0<<COM3A0) | (0<<COM3B1) | (0<<COM3B0) | (0<<COM3C1) | (0<<COM3C0) | (0<<WGM31) | (0<<WGM30);
+; 0000 00A3 
+; 0000 00A4 // Timer/Counter 3 initialization
+; 0000 00A5 // Clock source: System Clock
+; 0000 00A6 // Clock value: Timer3 Stopped
+; 0000 00A7 // Mode: Normal top=0xFFFF
+; 0000 00A8 // OC3A output: Disconnected
+; 0000 00A9 // OC3B output: Disconnected
+; 0000 00AA // OC3C output: Disconnected
+; 0000 00AB // Noise Canceler: Off
+; 0000 00AC // Input Capture on Falling Edge
+; 0000 00AD // Timer3 Overflow Interrupt: Off
+; 0000 00AE // Input Capture Interrupt: Off
+; 0000 00AF // Compare A Match Interrupt: Off
+; 0000 00B0 // Compare B Match Interrupt: Off
+; 0000 00B1 // Compare C Match Interrupt: Off
+; 0000 00B2 TCCR3A=(0<<COM3A1) | (0<<COM3A0) | (0<<COM3B1) | (0<<COM3B0) | (0<<COM3C1) | (0<<COM3C0) | (0<<WGM31) | (0<<WGM30);
 	STS  139,R30
-; 0000 00B1 TCCR3B=(0<<ICNC3) | (0<<ICES3) | (0<<WGM33) | (0<<WGM32) | (0<<CS32) | (0<<CS31) | (0<<CS30);
+; 0000 00B3 TCCR3B=(0<<ICNC3) | (0<<ICES3) | (0<<WGM33) | (0<<WGM32) | (0<<CS32) | (0<<CS31) | (0<<CS30);
 	STS  138,R30
-; 0000 00B2 TCNT3H=0x00;
+; 0000 00B4 TCNT3H=0x00;
 	STS  137,R30
-; 0000 00B3 TCNT3L=0x00;
+; 0000 00B5 TCNT3L=0x00;
 	STS  136,R30
-; 0000 00B4 ICR3H=0x00;
+; 0000 00B6 ICR3H=0x00;
 	STS  129,R30
-; 0000 00B5 ICR3L=0x00;
+; 0000 00B7 ICR3L=0x00;
 	STS  128,R30
-; 0000 00B6 OCR3AH=0x00;
+; 0000 00B8 OCR3AH=0x00;
 	STS  135,R30
-; 0000 00B7 OCR3AL=0x00;
+; 0000 00B9 OCR3AL=0x00;
 	STS  134,R30
-; 0000 00B8 OCR3BH=0x00;
+; 0000 00BA OCR3BH=0x00;
 	STS  133,R30
-; 0000 00B9 OCR3BL=0x00;
+; 0000 00BB OCR3BL=0x00;
 	STS  132,R30
-; 0000 00BA OCR3CH=0x00;
+; 0000 00BC OCR3CH=0x00;
 	STS  131,R30
-; 0000 00BB OCR3CL=0x00;
+; 0000 00BD OCR3CL=0x00;
 	STS  130,R30
-; 0000 00BC 
-; 0000 00BD // Timer(s)/Counter(s) Interrupt(s) initialization
-; 0000 00BE TIMSK=(0<<OCIE2) | (0<<TOIE2) | (0<<TICIE1) | (0<<OCIE1A) | (0<<OCIE1B) | (0<<TOIE1) | (0<<OCIE0) | (0<<TOIE0);
+; 0000 00BE 
+; 0000 00BF // Timer(s)/Counter(s) Interrupt(s) initialization
+; 0000 00C0 TIMSK=(0<<OCIE2) | (0<<TOIE2) | (0<<TICIE1) | (0<<OCIE1A) | (0<<OCIE1B) | (0<<TOIE1) | (0<<OCIE0) | (0<<TOIE0);
 	OUT  0x37,R30
-; 0000 00BF ETIMSK=(0<<TICIE3) | (0<<OCIE3A) | (0<<OCIE3B) | (0<<TOIE3) | (0<<OCIE3C) | (0<<OCIE1C);
+; 0000 00C1 ETIMSK=(0<<TICIE3) | (0<<OCIE3A) | (0<<OCIE3B) | (0<<TOIE3) | (0<<OCIE3C) | (0<<OCIE1C);
 	STS  125,R30
-; 0000 00C0 
-; 0000 00C1 // External Interrupt(s) initialization
-; 0000 00C2 // INT0: Off
-; 0000 00C3 // INT1: Off
-; 0000 00C4 // INT2: Off
-; 0000 00C5 // INT3: Off
-; 0000 00C6 // INT4: Off
-; 0000 00C7 // INT5: Off
-; 0000 00C8 // INT6: Off
-; 0000 00C9 // INT7: Off
-; 0000 00CA EICRA=(0<<ISC31) | (0<<ISC30) | (0<<ISC21) | (0<<ISC20) | (0<<ISC11) | (0<<ISC10) | (0<<ISC01) | (0<<ISC00);
+; 0000 00C2 
+; 0000 00C3 // External Interrupt(s) initialization
+; 0000 00C4 // INT0: Off
+; 0000 00C5 // INT1: Off
+; 0000 00C6 // INT2: Off
+; 0000 00C7 // INT3: Off
+; 0000 00C8 // INT4: Off
+; 0000 00C9 // INT5: Off
+; 0000 00CA // INT6: Off
+; 0000 00CB // INT7: Off
+; 0000 00CC EICRA=(0<<ISC31) | (0<<ISC30) | (0<<ISC21) | (0<<ISC20) | (0<<ISC11) | (0<<ISC10) | (0<<ISC01) | (0<<ISC00);
 	STS  106,R30
-; 0000 00CB EICRB=(0<<ISC71) | (0<<ISC70) | (0<<ISC61) | (0<<ISC60) | (0<<ISC51) | (0<<ISC50) | (0<<ISC41) | (0<<ISC40);
+; 0000 00CD EICRB=(0<<ISC71) | (0<<ISC70) | (0<<ISC61) | (0<<ISC60) | (0<<ISC51) | (0<<ISC50) | (0<<ISC41) | (0<<ISC40);
 	OUT  0x3A,R30
-; 0000 00CC EIMSK=(0<<INT7) | (0<<INT6) | (0<<INT5) | (0<<INT4) | (0<<INT3) | (0<<INT2) | (0<<INT1) | (0<<INT0);
+; 0000 00CE EIMSK=(0<<INT7) | (0<<INT6) | (0<<INT5) | (0<<INT4) | (0<<INT3) | (0<<INT2) | (0<<INT1) | (0<<INT0);
 	OUT  0x39,R30
-; 0000 00CD 
-; 0000 00CE // USART0 initialization
-; 0000 00CF // USART0 disabled
-; 0000 00D0 UCSR0B=(0<<RXCIE0) | (0<<TXCIE0) | (0<<UDRIE0) | (0<<RXEN0) | (0<<TXEN0) | (0<<UCSZ02) | (0<<RXB80) | (0<<TXB80);
+; 0000 00CF 
+; 0000 00D0 // USART0 initialization
+; 0000 00D1 // USART0 disabled
+; 0000 00D2 UCSR0B=(0<<RXCIE0) | (0<<TXCIE0) | (0<<UDRIE0) | (0<<RXEN0) | (0<<TXEN0) | (0<<UCSZ02) | (0<<RXB80) | (0<<TXB80);
 	OUT  0xA,R30
-; 0000 00D1 
-; 0000 00D2 // USART1 initialization
-; 0000 00D3 // USART1 disabled
-; 0000 00D4 UCSR1B=(0<<RXCIE1) | (0<<TXCIE1) | (0<<UDRIE1) | (0<<RXEN1) | (0<<TXEN1) | (0<<UCSZ12) | (0<<RXB81) | (0<<TXB81);
+; 0000 00D3 
+; 0000 00D4 // USART1 initialization
+; 0000 00D5 // USART1 disabled
+; 0000 00D6 UCSR1B=(0<<RXCIE1) | (0<<TXCIE1) | (0<<UDRIE1) | (0<<RXEN1) | (0<<TXEN1) | (0<<UCSZ12) | (0<<RXB81) | (0<<TXB81);
 	STS  154,R30
-; 0000 00D5 
-; 0000 00D6 // Analog Comparator initialization
-; 0000 00D7 // Analog Comparator: Off
-; 0000 00D8 // The Analog Comparator's positive input is
-; 0000 00D9 // connected to the AIN0 pin
-; 0000 00DA // The Analog Comparator's negative input is
-; 0000 00DB // connected to the AIN1 pin
-; 0000 00DC ACSR=(1<<ACD) | (0<<ACBG) | (0<<ACO) | (0<<ACI) | (0<<ACIE) | (0<<ACIC) | (0<<ACIS1) | (0<<ACIS0);
+; 0000 00D7 
+; 0000 00D8 // Analog Comparator initialization
+; 0000 00D9 // Analog Comparator: Off
+; 0000 00DA // The Analog Comparator's positive input is
+; 0000 00DB // connected to the AIN0 pin
+; 0000 00DC // The Analog Comparator's negative input is
+; 0000 00DD // connected to the AIN1 pin
+; 0000 00DE ACSR=(1<<ACD) | (0<<ACBG) | (0<<ACO) | (0<<ACI) | (0<<ACIE) | (0<<ACIC) | (0<<ACIS1) | (0<<ACIS0);
 	LDI  R30,LOW(128)
 	OUT  0x8,R30
-; 0000 00DD SFIOR=(0<<ACME);
+; 0000 00DF SFIOR=(0<<ACME);
 	LDI  R30,LOW(0)
 	OUT  0x20,R30
-; 0000 00DE 
-; 0000 00DF // ADC initialization
-; 0000 00E0 // ADC disabled
-; 0000 00E1 ADCSRA=(0<<ADEN) | (0<<ADSC) | (0<<ADFR) | (0<<ADIF) | (0<<ADIE) | (0<<ADPS2) | (0<<ADPS1) | (0<<ADPS0);
+; 0000 00E0 
+; 0000 00E1 // ADC initialization
+; 0000 00E2 // ADC disabled
+; 0000 00E3 ADCSRA=(0<<ADEN) | (0<<ADSC) | (0<<ADFR) | (0<<ADIF) | (0<<ADIE) | (0<<ADPS2) | (0<<ADPS1) | (0<<ADPS0);
 	OUT  0x6,R30
-; 0000 00E2 
-; 0000 00E3 // SPI initialization
-; 0000 00E4 // SPI disabled
-; 0000 00E5 SPCR=(0<<SPIE) | (0<<SPE) | (0<<DORD) | (0<<MSTR) | (0<<CPOL) | (0<<CPHA) | (0<<SPR1) | (0<<SPR0);
+; 0000 00E4 
+; 0000 00E5 // SPI initialization
+; 0000 00E6 // SPI disabled
+; 0000 00E7 SPCR=(0<<SPIE) | (0<<SPE) | (0<<DORD) | (0<<MSTR) | (0<<CPOL) | (0<<CPHA) | (0<<SPR1) | (0<<SPR0);
 	OUT  0xD,R30
-; 0000 00E6 
-; 0000 00E7 // TWI initialization
-; 0000 00E8 // TWI disabled
-; 0000 00E9 TWCR=(0<<TWEA) | (0<<TWSTA) | (0<<TWSTO) | (0<<TWEN) | (0<<TWIE);
+; 0000 00E8 
+; 0000 00E9 // TWI initialization
+; 0000 00EA // TWI disabled
+; 0000 00EB TWCR=(0<<TWEA) | (0<<TWSTA) | (0<<TWSTO) | (0<<TWEN) | (0<<TWIE);
 	STS  116,R30
-; 0000 00EA 
-; 0000 00EB // Alphanumeric LCD initialization
-; 0000 00EC // Connections are specified in the
-; 0000 00ED // Project|Configure|C Compiler|Libraries|Alphanumeric LCD menu:
-; 0000 00EE // RS - PORTA Bit 0
-; 0000 00EF // RD - PORTA Bit 1
-; 0000 00F0 // EN - PORTA Bit 2
-; 0000 00F1 // D4 - PORTA Bit 4
-; 0000 00F2 // D5 - PORTA Bit 5
-; 0000 00F3 // D6 - PORTA Bit 6
-; 0000 00F4 // D7 - PORTA Bit 7
-; 0000 00F5 // Characters/line: 20
-; 0000 00F6 lcd_init(20);
+; 0000 00EC 
+; 0000 00ED // Alphanumeric LCD initialization
+; 0000 00EE // Connections are specified in the
+; 0000 00EF // Project|Configure|C Compiler|Libraries|Alphanumeric LCD menu:
+; 0000 00F0 // RS - PORTA Bit 0
+; 0000 00F1 // RD - PORTA Bit 1
+; 0000 00F2 // EN - PORTA Bit 2
+; 0000 00F3 // D4 - PORTA Bit 4
+; 0000 00F4 // D5 - PORTA Bit 5
+; 0000 00F5 // D6 - PORTA Bit 6
+; 0000 00F6 // D7 - PORTA Bit 7
+; 0000 00F7 // Characters/line: 20
+; 0000 00F8 lcd_init(20);
 	LDI  R26,LOW(20)
 	RCALL _lcd_init
-; 0000 00F7 }
-; 0000 00F8 while (1)
+; 0000 00F9 }
+; 0000 00FA while (1)
 _0x6:
-; 0000 00F9       {
-; 0000 00FA       startGame();
+; 0000 00FB       {
+; 0000 00FC       startGame();
 	RCALL _startGame
-; 0000 00FB       printLCD();
+; 0000 00FD       printLCD();
 	RCALL _printLCD
-; 0000 00FC       symbol = (turn == 1) ? '*' : '#';
+; 0000 00FE       symbol = (turn == 1) ? '*' : '#';
 	LDI  R30,LOW(1)
 	LDI  R31,HIGH(1)
 	CP   R30,R8
@@ -1669,44 +1671,62 @@ _0x9:
 	LDI  R30,LOW(35)
 _0xA:
 	MOV  R11,R30
-; 0000 00FD       delay_ms(1000);
-	LDI  R26,LOW(1000)
-	LDI  R27,HIGH(1000)
-	CALL _delay_ms
-; 0000 00FE 
-; 0000 00FF       }
+; 0000 00FF       do {
+_0xD:
+; 0000 0100         inputS[0] = '-', inputS[1] = '-';
+	LDI  R30,LOW(45)
+	STS  _inputS,R30
+	__PUTB1MN _inputS,1
+; 0000 0101         printInput();
+	RCALL _printInput
+; 0000 0102         inputS[0] = scanKeypad();
+	RCALL _scanKeypad
+	STS  _inputS,R30
+; 0000 0103         printInput();
+	RCALL _printInput
+; 0000 0104         inputS[1] = scanKeypad();
+	RCALL _scanKeypad
+	__PUTB1MN _inputS,1
+; 0000 0105         printInput();
+	RCALL _printInput
+; 0000 0106 
+; 0000 0107         } while (scanKeypad() != '*');
+	RCALL _scanKeypad
+	CPI  R30,LOW(0x2A)
+	BRNE _0xD
+; 0000 0108       }
 	RJMP _0x6
-; 0000 0100 }
-_0xC:
-	RJMP _0xC
+; 0000 0109 }
+_0xF:
+	RJMP _0xF
 ; .FEND
 ;
 ;char scanKeypad() {
-; 0000 0102 char scanKeypad() {
+; 0000 010B char scanKeypad() {
 _scanKeypad:
 ; .FSTART _scanKeypad
-; 0000 0103     int row,col;
-; 0000 0104     while (1) {
+; 0000 010C     int row,col;
+; 0000 010D     while (1) {
 	CALL __SAVELOCR4
 ;	row -> R16,R17
 ;	col -> R18,R19
-_0xD:
-; 0000 0105         for (row = 0; row < 4; row++) {
+_0x10:
+; 0000 010E         for (row = 0; row < 4; row++) {
 	__GETWRN 16,17,0
-_0x11:
+_0x14:
 	__CPWRN 16,17,4
-	BRGE _0x12
-; 0000 0106             PORTD &= ~(1 << row);
+	BRGE _0x15
+; 0000 010F             PORTD &= ~(1 << row);
 	CALL SUBOPT_0x0
 	COM  R30
 	AND  R30,R1
 	OUT  0x12,R30
-; 0000 0107             for (col = 0; col < 3; col++) {
+; 0000 0110             for (col = 0; col < 3; col++) {
 	__GETWRN 18,19,0
-_0x14:
+_0x17:
 	__CPWRN 18,19,3
-	BRGE _0x15
-; 0000 0108                 if (!(PIND & (1 << (col + 4)))) {
+	BRGE _0x18
+; 0000 0111                 if (!(PIND & (1 << (col + 4)))) {
 	IN   R1,16
 	MOVW R30,R18
 	ADIW R30,4
@@ -1718,16 +1738,16 @@ _0x14:
 	AND  R30,R26
 	AND  R31,R27
 	SBIW R30,0
-	BRNE _0x16
-; 0000 0109                     delay_ms(200);
-	LDI  R26,LOW(200)
+	BRNE _0x19
+; 0000 0112                     delay_ms(250);
+	LDI  R26,LOW(250)
 	LDI  R27,0
 	CALL _delay_ms
-; 0000 010A                     PORTD |= (1 << row);
+; 0000 0113                     PORTD |= (1 << row);
 	CALL SUBOPT_0x0
 	OR   R30,R1
 	OUT  0x12,R30
-; 0000 010B                     return keypad[row][col];
+; 0000 0114                     return keypad[row][col];
 	__MULBNWRU 16,17,3
 	SUBI R30,LOW(-_keypad)
 	SBCI R31,HIGH(-_keypad)
@@ -1735,101 +1755,101 @@ _0x14:
 	ADC  R31,R19
 	LD   R30,Z
 	RJMP _0x2080005
-; 0000 010C                 }
-; 0000 010D             }
-_0x16:
+; 0000 0115                 }
+; 0000 0116             }
+_0x19:
 	__ADDWRN 18,19,1
-	RJMP _0x14
-_0x15:
-; 0000 010E             PORTD |= (1 << row);
+	RJMP _0x17
+_0x18:
+; 0000 0117             PORTD |= (1 << row);
 	CALL SUBOPT_0x0
 	OR   R30,R1
 	OUT  0x12,R30
-; 0000 010F         }
+; 0000 0118         }
 	__ADDWRN 16,17,1
-	RJMP _0x11
-_0x12:
-; 0000 0110     }
-	RJMP _0xD
-; 0000 0111 
-; 0000 0112 }
+	RJMP _0x14
+_0x15:
+; 0000 0119     }
+	RJMP _0x10
+; 0000 011A 
+; 0000 011B }
 ; .FEND
 ;
 ;void startGame() {
-; 0000 0114 void startGame() {
+; 0000 011D void startGame() {
 _startGame:
 ; .FSTART _startGame
-; 0000 0115     lcd_clear();
+; 0000 011E     lcd_clear();
 	RCALL _lcd_clear
-; 0000 0116     PORTB = 0x00;
+; 0000 011F     PORTB = 0x00;
 	LDI  R30,LOW(0)
 	OUT  0x18,R30
-; 0000 0117     PORTC = 0x00;
+; 0000 0120     PORTC = 0x00;
 	OUT  0x15,R30
-; 0000 0118     lcd_gotoxy(3,1);
+; 0000 0121     lcd_gotoxy(3,1);
 	LDI  R30,LOW(3)
 	ST   -Y,R30
 	LDI  R26,LOW(1)
 	RCALL _lcd_gotoxy
-; 0000 0119     lcd_puts("press any key");
-	__POINTW2MN _0x17,0
+; 0000 0122     lcd_puts("press any key");
+	__POINTW2MN _0x1A,0
 	RCALL _lcd_puts
-; 0000 011A     lcd_gotoxy(6,2);
+; 0000 0123     lcd_gotoxy(6,2);
 	LDI  R30,LOW(6)
 	ST   -Y,R30
 	LDI  R26,LOW(2)
 	RCALL _lcd_gotoxy
-; 0000 011B     lcd_puts("to start");
-	__POINTW2MN _0x17,14
+; 0000 0124     lcd_puts("to start");
+	__POINTW2MN _0x1A,14
 	RCALL _lcd_puts
-; 0000 011C     scanKeypad();
+; 0000 0125     scanKeypad();
 	RCALL _scanKeypad
-; 0000 011D     lcd_clear();
+; 0000 0126     lcd_clear();
 	RCALL _lcd_clear
-; 0000 011E }
+; 0000 0127 }
 	RET
 ; .FEND
 
 	.DSEG
-_0x17:
+_0x1A:
 	.BYTE 0x17
 ;
 ;void printBoard() {
-; 0000 0120 void printBoard() {
+; 0000 0129 void printBoard() {
 
 	.CSEG
 _printBoard:
 ; .FSTART _printBoard
-; 0000 0121     int row,col;
-; 0000 0122     lcd_gotoxy(0,0);
+; 0000 012A     int row,col;
+; 0000 012B     lcd_gotoxy(0,0);
 	CALL __SAVELOCR4
 ;	row -> R16,R17
 ;	col -> R18,R19
 	CALL SUBOPT_0x1
-; 0000 0123     lcd_puts(" 0123456789");
-	__POINTW2MN _0x18,0
+; 0000 012C     lcd_puts(" 0123456789");
+	__POINTW2MN _0x1B,0
 	RCALL _lcd_puts
-; 0000 0124     for (row = 0;row < 3;row++) {
+; 0000 012D     for (row = 0;row < 3;row++) {
 	__GETWRN 16,17,0
-_0x1A:
+_0x1D:
 	__CPWRN 16,17,3
-	BRGE _0x1B
-; 0000 0125         lcd_gotoxy(0,(row + 1));
+	BRGE _0x1E
+; 0000 012E         lcd_gotoxy(0,(row + 1));
 	LDI  R30,LOW(0)
 	ST   -Y,R30
 	MOV  R26,R16
 	SUBI R26,-LOW(1)
 	RCALL _lcd_gotoxy
-; 0000 0126         lcd_putchar(('0' + row + 1));
+; 0000 012F         lcd_putchar(('0' + row + 1));
 	MOV  R26,R16
 	SUBI R26,-LOW(49)
 	RCALL _lcd_putchar
-; 0000 0127         for (col = 0;col < 10;col++) {
+; 0000 0130         for (col = 0;col < 10;col++) {
 	__GETWRN 18,19,0
-_0x1D:
+_0x20:
 	__CPWRN 18,19,10
-	BRGE _0x1E
-; 0000 0128             lcd_putchar(board[row][col]);
+	BRGE _0x21
+; 0000 0131             lcd_putchar(board[row][col]);
 	__MULBNWRU 16,17,10
 	SUBI R30,LOW(-_board)
 	SBCI R31,HIGH(-_board)
@@ -1837,17 +1857,17 @@ _0x1D:
 	ADC  R31,R19
 	LD   R26,Z
 	RCALL _lcd_putchar
-; 0000 0129         };
+; 0000 0132         };
 	__ADDWRN 18,19,1
+	RJMP _0x20
+_0x21:
+; 0000 0133     };
+	__ADDWRN 16,17,1
 	RJMP _0x1D
 _0x1E:
-; 0000 012A     };
-	__ADDWRN 16,17,1
-	RJMP _0x1A
-_0x1B:
-; 0000 012B     lcd_gotoxy(0,0);
+; 0000 0134     lcd_gotoxy(0,0);
 	CALL SUBOPT_0x1
-; 0000 012C }
+; 0000 0135 }
 _0x2080005:
 	CALL __LOADLOCR4
 	ADIW R28,4
@@ -1855,164 +1875,164 @@ _0x2080005:
 ; .FEND
 
 	.DSEG
-_0x18:
+_0x1B:
 	.BYTE 0xC
 ;
 ;void printScore() {
-; 0000 012E void printScore() {
+; 0000 0137 void printScore() {
 
 	.CSEG
 _printScore:
 ; .FSTART _printScore
-; 0000 012F     char buffer[6];
-; 0000 0130 
-; 0000 0131     lcd_gotoxy(14,0);
+; 0000 0138     char buffer[6];
+; 0000 0139 
+; 0000 013A     lcd_gotoxy(14,0);
 	SBIW R28,6
 ;	buffer -> Y+0
 	LDI  R30,LOW(14)
 	ST   -Y,R30
 	LDI  R26,LOW(0)
 	CALL SUBOPT_0x2
-; 0000 0132     sprintf(buffer, "*P1=%d", score1);
+; 0000 013B     sprintf(buffer, "*P1=%d", score1);
 	__POINTW1FN _0x0,35
 	ST   -Y,R31
 	ST   -Y,R30
 	MOVW R30,R4
 	CALL SUBOPT_0x3
-; 0000 0133     lcd_puts(buffer);
-; 0000 0134     PORTB = score1;
+; 0000 013C     lcd_puts(buffer);
+; 0000 013D     PORTB = score1;
 	OUT  0x18,R4
-; 0000 0135 
-; 0000 0136     lcd_gotoxy(14,1);
+; 0000 013E 
+; 0000 013F     lcd_gotoxy(14,1);
 	LDI  R30,LOW(14)
 	ST   -Y,R30
 	LDI  R26,LOW(1)
 	CALL SUBOPT_0x2
-; 0000 0137     sprintf(buffer, "#P2=%d", score2);
+; 0000 0140     sprintf(buffer, "#P2=%d", score2);
 	__POINTW1FN _0x0,42
 	ST   -Y,R31
 	ST   -Y,R30
 	MOVW R30,R6
 	CALL SUBOPT_0x3
-; 0000 0138     lcd_puts(buffer);
-; 0000 0139     PORTC = score2;
+; 0000 0141     lcd_puts(buffer);
+; 0000 0142     PORTC = score2;
 	OUT  0x15,R6
-; 0000 013A 
-; 0000 013B     lcd_gotoxy(0,0);
+; 0000 0143 
+; 0000 0144     lcd_gotoxy(0,0);
 	CALL SUBOPT_0x1
-; 0000 013C 
-; 0000 013D }
+; 0000 0145 
+; 0000 0146 }
 	ADIW R28,6
 	RET
 ; .FEND
 ;
 ;void printInput() {
-; 0000 013F void printInput() {
+; 0000 0148 void printInput() {
 _printInput:
 ; .FSTART _printInput
-; 0000 0140     lcd_gotoxy(15,3);
+; 0000 0149     lcd_gotoxy(15,3);
 	LDI  R30,LOW(15)
 	ST   -Y,R30
 	LDI  R26,LOW(3)
 	RCALL _lcd_gotoxy
-; 0000 0141     lcd_puts("N=");
-	__POINTW2MN _0x1F,0
+; 0000 014A     lcd_puts("N=");
+	__POINTW2MN _0x22,0
 	RCALL _lcd_puts
-; 0000 0142     lcd_gotoxy(17,3);
+; 0000 014B     lcd_gotoxy(17,3);
 	LDI  R30,LOW(17)
 	ST   -Y,R30
 	LDI  R26,LOW(3)
 	RCALL _lcd_gotoxy
-; 0000 0143     lcd_puts(inputS);
+; 0000 014C     lcd_puts(inputS);
 	LDI  R26,LOW(_inputS)
 	LDI  R27,HIGH(_inputS)
 	RJMP _0x2080004
-; 0000 0144     lcd_gotoxy(0,0);
-; 0000 0145 
-; 0000 0146 }
+; 0000 014D     lcd_gotoxy(0,0);
+; 0000 014E 
+; 0000 014F }
 ; .FEND
 
 	.DSEG
-_0x1F:
+_0x22:
 	.BYTE 0x3
 ;
 ;void printLCD () {
-; 0000 0148 void printLCD () {
+; 0000 0151 void printLCD () {
 
 	.CSEG
 _printLCD:
 ; .FSTART _printLCD
-; 0000 0149     lcd_clear();
+; 0000 0152     lcd_clear();
 	RCALL _lcd_clear
-; 0000 014A     printBoard();
+; 0000 0153     printBoard();
 	RCALL _printBoard
-; 0000 014B     printScore();
+; 0000 0154     printScore();
 	RCALL _printScore
-; 0000 014C     printInput();
+; 0000 0155     printInput();
 	RCALL _printInput
-; 0000 014D     printTurn();
+; 0000 0156     printTurn();
 	RCALL _printTurn
-; 0000 014E     lcd_gotoxy(0,0);
+; 0000 0157     lcd_gotoxy(0,0);
 	RJMP _0x2080003
-; 0000 014F }
+; 0000 0158 }
 ; .FEND
 ;
 ;void printTurn() {
-; 0000 0151 void printTurn() {
+; 0000 015A void printTurn() {
 _printTurn:
 ; .FSTART _printTurn
-; 0000 0152     lcd_gotoxy(12,turn);
+; 0000 015B     lcd_gotoxy(12,turn);
 	LDI  R30,LOW(12)
 	ST   -Y,R30
 	MOV  R26,R8
 	RCALL _lcd_gotoxy
-; 0000 0153     lcd_puts("->");
-	__POINTW2MN _0x20,0
+; 0000 015C     lcd_puts("->");
+	__POINTW2MN _0x23,0
 _0x2080004:
 	RCALL _lcd_puts
-; 0000 0154     lcd_gotoxy(0,0);
+; 0000 015D     lcd_gotoxy(0,0);
 _0x2080003:
 	LDI  R30,LOW(0)
 	ST   -Y,R30
 	LDI  R26,LOW(0)
 	RCALL _lcd_gotoxy
-; 0000 0155 }
+; 0000 015E }
 	RET
 ; .FEND
 
 	.DSEG
-_0x20:
+_0x23:
 	.BYTE 0x3
 ;
 ;void printError(int error) {
-; 0000 0157 void printError(int error) {
+; 0000 0160 void printError(int error) {
 
 	.CSEG
-; 0000 0158     lcd_clear();
+; 0000 0161     lcd_clear();
 ;	error -> Y+0
-; 0000 0159     PORTB = 0x00;
-; 0000 015A     PORTC = 0x00;
-; 0000 015B 
-; 0000 015C     switch (error) {
-; 0000 015D         case 1:
-; 0000 015E             lcd_puts("invalid input");
-; 0000 015F             break;
-; 0000 0160 
-; 0000 0161         case 2:
-; 0000 0162             lcd_puts("chosen box is taken");
-; 0000 0163             break;
+; 0000 0162     PORTB = 0x00;
+; 0000 0163     PORTC = 0x00;
 ; 0000 0164 
-; 0000 0165         default:
-; 0000 0166             lcd_puts("unknown error");
-; 0000 0167         };
-; 0000 0168     lcd_gotoxy(0,2);
-; 0000 0169     lcd_puts("press any key \nto continue");
-; 0000 016A     scanKeypad();
-; 0000 016B     lcd_clear();
-; 0000 016C }
+; 0000 0165     switch (error) {
+; 0000 0166         case 1:
+; 0000 0167             lcd_puts("invalid input");
+; 0000 0168             break;
+; 0000 0169 
+; 0000 016A         case 2:
+; 0000 016B             lcd_puts("chosen box is taken");
+; 0000 016C             break;
+; 0000 016D 
+; 0000 016E         default:
+; 0000 016F             lcd_puts("unknown error");
+; 0000 0170         };
+; 0000 0171     lcd_gotoxy(0,2);
+; 0000 0172     lcd_puts("press any key \nto continue");
+; 0000 0173     scanKeypad();
+; 0000 0174     lcd_clear();
+; 0000 0175 }
 
 	.DSEG
-_0x25:
+_0x28:
 	.BYTE 0x4B
 	#ifndef __SLEEP_DEFINED__
 	#define __SLEEP_DEFINED__
@@ -2070,7 +2090,7 @@ _lcd_gotoxy:
 	LDD  R26,Y+1
 	ADD  R26,R30
 	RCALL __lcd_write_data
-	LDD  R10,Y+1
+	LDD  R12,Y+1
 	LD   R30,Y
 	STS  __lcd_y,R30
 	ADIW R28,2
@@ -2086,7 +2106,7 @@ _lcd_clear:
 	CALL SUBOPT_0x4
 	LDI  R30,LOW(0)
 	STS  __lcd_y,R30
-	MOV  R10,R30
+	MOV  R12,R30
 	RET
 ; .FEND
 _lcd_putchar:
@@ -2096,7 +2116,7 @@ _lcd_putchar:
 	CPI  R26,LOW(0xA)
 	BREQ _0x2000005
 	LDS  R30,__lcd_maxx
-	CP   R10,R30
+	CP   R12,R30
 	BRLO _0x2000004
 _0x2000005:
 	LDI  R30,LOW(0)
@@ -2111,7 +2131,7 @@ _0x2000005:
 	RJMP _0x2080002
 _0x2000007:
 _0x2000004:
-	INC  R10
+	INC  R12
 	SBI  0x1B,0
 	LD   R26,Y
 	RCALL __lcd_write_data
