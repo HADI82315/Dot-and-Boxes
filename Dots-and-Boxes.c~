@@ -90,6 +90,8 @@ bool updateScore();
 
 bool gameOver();
 
+void printWinner();
+
 void main(void)
 {
 {
@@ -272,19 +274,20 @@ while (1)
       {  
       startGame();
       printLCD();
-      while (1) {
-        symbol = (turn == 0) ? '*' : '#';
-        printTurn();
-        getInput();
-        board[digits[0] - 1][digits[1]] = symbol;
-        if (updateScore() == false ){
-            turn = 1 - turn;
-        } else {
-            printScores();
-        }
-        printBoard();
-        }
+      while (!true) {
+            symbol = (turn == 0) ? '*' : '#';
+            printTurn();
+            getInput();
+            board[digits[0] - 1][digits[1]] = symbol;
+            if (updateScore() == false ){
+                turn = 1 - turn;
+            } else {
+                printScores();
+            }
+            printBoard();
       }
+      printWinner();
+    }
 }
 
 char scanKeypad() {
@@ -306,11 +309,17 @@ char scanKeypad() {
 }
 
 void startGame() {
-    memcpy(board, initial_board, sizeof(board));
+    
     lcd_clear();
+    memcpy(board, initial_board, sizeof(board));
     PORTB = 0x00;
     PORTC = 0x00;
-    lcd_gotoxy(3,1);
+    scores[0] = scores[1] = digits[0] = digits[1] = 0;
+    turn = 0;
+    
+    lcd_gotoxy(6,0);
+    lcd_puts("Sadeghian");
+    lcd_gotoxy(4,1);
     lcd_puts("press any key");
     lcd_gotoxy(6,2);
     lcd_puts("to start");
@@ -477,4 +486,22 @@ bool gameOver() {
         };
     };
     return true;
+}
+
+void printWinner() {
+    lcd_clear();
+    lcd_gotoxy(4,0);
+    if (scores[0] > scores[1]) {
+        lcd_puts("P1 is winner!");    
+    } else if (scores[0] < scores[1]) {
+        lcd_puts("P2 is winner!");
+    } else {
+        lcd_puts(" match tied!");
+    }
+    lcd_gotoxy(4,1);
+    lcd_puts("press any key");
+    lcd_gotoxy(5,2);
+    lcd_puts("to continue");
+    scanKeypad();
+    lcd_clear();
 }
