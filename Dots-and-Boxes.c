@@ -35,12 +35,22 @@ char keypad[4][3] = {
     '7','8','9',
     '*','0','#'
 };
+
+char board[3][10] = {
+    ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ', 
+    ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
+    ' ',' ',' ',' ',' ',' ',' ',' ',' ',' '
+};
+
 char scanKeypad();
+
 void startGame();
+
+void printBoard();
+
 void main(void)
 {
-// Declare your local variables here
-
+{
 // Input/Output Ports initialization
 // Port A initialization
 // Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In 
@@ -215,11 +225,11 @@ TWCR=(0<<TWEA) | (0<<TWSTA) | (0<<TWSTO) | (0<<TWEN) | (0<<TWIE);
 // D7 - PORTA Bit 7
 // Characters/line: 20
 lcd_init(20);
-
+}
 while (1)
       {
       startGame();
-      lcd_clear();
+      printBoard();
       delay_ms(2000);
       }
 }
@@ -231,6 +241,7 @@ char scanKeypad() {
             PORTD &= ~(1 << row);
             for (col = 0; col < 3; col++) {
                 if (!(PIND & (1 << (col + 4)))) {
+                    delay_ms(200);
                     PORTD |= (1 << row);
                     return keypad[row][col];
                 }
@@ -242,9 +253,25 @@ char scanKeypad() {
 }
 
 void startGame() {
+    lcd_clear();
     lcd_gotoxy(3,1);
     lcd_puts("press any key");
     lcd_gotoxy(6,2);
     lcd_puts("to start");
     scanKeypad();
+    lcd_clear();
+}
+
+void printBoard() {
+    int row,col;
+    lcd_gotoxy(0,0);
+    lcd_puts(" 0123456789");
+    for (row = 0;row < 3;row++) {
+        lcd_gotoxy(0,(row + 1));
+        lcd_putchar(('0' + row + 1));
+        for (col = 0;col < 10;col++) {
+            lcd_putchar(board[row][col]);
+        };    
+    };
+    lcd_gotoxy(0,0);
 }
