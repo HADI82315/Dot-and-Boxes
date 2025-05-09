@@ -31,6 +31,8 @@ Data Stack size         : 1024
 
 #include <string.h>
 
+#include <stdbool.h>
+
 char keypad[4][3] = {
     '1','2','3',
     '4','5','6',
@@ -38,21 +40,20 @@ char keypad[4][3] = {
     '*','0','#'
 };
 
-char board[3][10] = {
+char initial_board[3][10] = {
     ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ', 
     ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
     ' ',' ',' ',' ',' ',' ',' ',' ',' ',' '
 };
+char board[3][10];
 
-int score1 = 4;
-int score2 = 5;
+int scores[2] = {4,5}; 
 
 int turn = 1;
 char symbol = '*';
 
 char inputS[3] = {'-','-','\0'};
-char firstDigit;
-char secondDigit;
+int digits[2];
 int inputI;
 
 char scanKeypad();
@@ -259,6 +260,9 @@ while (1)
       printLCD();
       symbol = (turn == 1) ? '*' : '#';
       getInput();
+      board[digits[0] - 1][digits[1]] = symbol;
+      printBoard();
+      delay_ms(2000);
       }
 }
 
@@ -281,6 +285,7 @@ char scanKeypad() {
 }
 
 void startGame() {
+    memcpy(board, initial_board, sizeof(board));
     lcd_clear();
     PORTB = 0x00;
     PORTC = 0x00;
@@ -310,14 +315,14 @@ void printScore() {
     char buffer[6];
     
     lcd_gotoxy(14,0);
-    sprintf(buffer, "*P1=%d", score1);
+    sprintf(buffer, "*P1=%d", scores[0]);
     lcd_puts(buffer);
-    PORTB = score1;
+    PORTB = scores[0];
     
     lcd_gotoxy(14,1);
-    sprintf(buffer, "#P2=%d", score2);
+    sprintf(buffer, "#P2=%d", scores[1]);
     lcd_puts(buffer);
-    PORTC = score2;
+    PORTC = scores[1];
     
     lcd_gotoxy(0,0);
 
@@ -372,6 +377,7 @@ void printError(int error) {
     lcd_puts("press any key \nto continue");
     scanKeypad();
     lcd_clear();
+    printLCD();
 }
 
 void getInput() {
@@ -399,16 +405,17 @@ bool checkInput() {
         printError(1);
         return false;
     }
-    firstDigit = (inputS[0] - '0');
-    secondDigit = (inputS[1] - '0');
-    inputI = firstDigit * 10 + secondDigit;
+    digits[0] = (inputS[0] - '0');
+    digits[1] = (inputS[1] - '0');
+    inputI = digits[0] * 10 + digits[1];
     if (inputI < 10 || inputI > 39) {
         printError(2);
         return false;
     }
-    if (board[firstDigit - 1][secondDigit] != ' ') {
+    if (board[digits[0] - 1][digits[1]] != ' ') {
         printError(3);
         return false;
     }
     return true;
 }
+

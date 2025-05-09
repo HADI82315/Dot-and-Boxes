@@ -2,12 +2,12 @@ RAM Allocation [bytes]
 Variable                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
 keypad                                                                            0x05A1      12
-board                                                                             0x05AD      30
-inputS                                                                            0x05CB       3
-inputI                                                                            0x05CE       2
-_base_y                                                                           0x05D0       4
-_lcd_y                                                                            0x05D4       1
-_lcd_maxx                                                                         0x05D5       1
+initial_board                                                                     0x05AD      30
+board                                                                             0x05CB      30
+scores                                                                            0x05E9       4
+inputS                                                                            0x05ED       3
+digits                                                                            0x05F0       4
+_base_y                                                                           0x05F4       4
 
 EEPROM Allocation [bytes]
 Variable                                                                          Address   Size
@@ -16,36 +16,36 @@ Variable                                                                        
 Register Allocation
 Variable                                                                          Register  Size
 ------------------------------------------------------------------------------------------------
-score1                                                                            R4,R5        2
-score2                                                                            R6,R7        2
-turn                                                                              R8,R9        2
-symbol                                                                            R11          1
-firstDigit                                                                        R10          1
-secondDigit                                                                       R13          1
-_lcd_x                                                                            R12          1
+turn                                                                              R4,R5        2
+symbol                                                                            R7           1
+inputI                                                                            R8,R9        2
+_lcd_x                                                                            R6           1
+_lcd_y                                                                            R11          1
+_lcd_maxx                                                                         R10          1
 
 FLASH Allocation [words]
 Function                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-main                                                                              0x00129    106
-startGame                                                                         0x001D1     17
-printBoard                                                                        0x001E2     50
-printScore                                                                        0x00214     31
-printLCD                                                                          0x00241      6
-printTurn                                                                         0x00247     12
-printError                                                                        0x00253     38
-getInput                                                                          0x00279     27
-checkInput                                                                        0x00294     80
-_lcd_write_nibble_G100                                                            0x002E4     20
-_lcd_write_data                                                                   0x002F8     12
-lcd_gotoxy                                                                        0x00304     15
-lcd_clear                                                                         0x00313     13
-lcd_putchar                                                                       0x00320     26
-lcd_puts                                                                          0x0033A     17
-lcd_init                                                                          0x0034B     47
-put_buff_G101                                                                     0x0037A     64
-_print_G101                                                                       0x003BA    308
-sprintf                                                                           0x004EE     52
-strchr                                                                            0x00522     13
-strlen                                                                            0x0052F     12
-strlenf                                                                           0x0053B     13
+main                                                                              0x0012C    117
+startGame                                                                         0x001DF     29
+printBoard                                                                        0x001FC     50
+printScore                                                                        0x0022E     41
+printLCD                                                                          0x00265      6
+printTurn                                                                         0x0026B     12
+printError                                                                        0x00277     39
+getInput                                                                          0x0029E     27
+checkInput                                                                        0x002B9     80
+_lcd_write_nibble_G100                                                            0x00309     20
+_lcd_write_data                                                                   0x0031D     12
+lcd_gotoxy                                                                        0x00329     13
+lcd_clear                                                                         0x00336     12
+lcd_putchar                                                                       0x00342     21
+lcd_puts                                                                          0x00357     17
+lcd_init                                                                          0x00368     46
+put_buff_G101                                                                     0x00396     64
+_print_G101                                                                       0x003D6    308
+sprintf                                                                           0x0050A     52
+memcpy                                                                            0x0053E     18
+strchr                                                                            0x00550     13
+strlen                                                                            0x0055D     12
+strlenf                                                                           0x00569     13
