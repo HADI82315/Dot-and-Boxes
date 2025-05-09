@@ -29,6 +29,10 @@ Data Stack size         : 1024
 
 #include <stdio.h>
 
+#include <string.h>
+
+#include <stdbool.h>
+
 char keypad[4][3] = {
     '1','2','3',
     '4','5','6',
@@ -68,6 +72,10 @@ void printTurn();
 void printLCD();
 
 void printError(int error);
+
+void getInput();
+
+bool checkInput();
 
 void main(void)
 {
@@ -252,15 +260,7 @@ while (1)
       startGame();
       printLCD();
       symbol = (turn == 1) ? '*' : '#';
-      do {
-        inputS[0] = '-', inputS[1] = '-';
-        printInput();
-        inputS[0] = scanKeypad();
-        printInput();
-        inputS[1] = scanKeypad();
-        printInput();
-
-        } while (scanKeypad() != '*');
+      getInput();
       }
 }
 
@@ -358,8 +358,12 @@ void printError(int error) {
         case 1:
             lcd_puts("invalid input");
             break;
-    
+        
         case 2:
+            lcd_puts("out of range input");
+            break;
+                
+        case 3:
             lcd_puts("chosen box is taken");
             break;
         
@@ -370,4 +374,43 @@ void printError(int error) {
     lcd_puts("press any key \nto continue");
     scanKeypad();
     lcd_clear();
+}
+
+void getInput() {
+    get:
+    do {
+        inputS[0] = '-', inputS[1] = '-';
+        printInput();
+        lcd_gotoxy(11,2);
+        lcd_puts("         ");
+        inputS[0] = scanKeypad();
+        printInput();
+        inputS[1] = scanKeypad();
+        printInput();
+        lcd_gotoxy(11,2);
+        lcd_puts("*=confirm");
+        lcd_gotoxy(0,0);
+    } while (scanKeypad() != '*');
+    if (checkInput() != true) {
+        goto get;
+    } 
+}
+
+bool checkInput() {
+    if (strchr("#*", inputS[0]) || strchr("#*", inputS[1])) {
+        printError(1);
+        return false;
+    }
+    firstDigit = (inputS[0] - '0');
+    secondDigit = (inputS[1] - '0');
+    inputI = firstDigit * 10 + secondDigit;
+    if (inputI < 10 || inputI > 39) {
+        printError(2);
+        return false;
+    }
+    if (board[firstDigit - 1][secondDigit] != ' ') {
+        printError(3);
+        return false;
+    }
+    return true;
 }
