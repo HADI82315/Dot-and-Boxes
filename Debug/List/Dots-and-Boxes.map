@@ -1,8 +1,8 @@
 RAM Allocation [bytes]
 Variable                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-keypad                                                                            0x0500      12
-_base_y                                                                           0x050C       4
+keypad                                                                            0x0517      12
+_base_y                                                                           0x0523       4
 
 EEPROM Allocation [bytes]
 Variable                                                                          Address   Size
@@ -18,11 +18,13 @@ _lcd_maxx                                                                       
 FLASH Allocation [words]
 Function                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-main                                                                              0x00083    100
-scanKeypad                                                                        0x000E7     59
-_lcd_write_nibble_G100                                                            0x00122     20
-_lcd_write_data                                                                   0x00136     12
-lcd_gotoxy                                                                        0x00142     13
-lcd_clear                                                                         0x0014F     10
-lcd_putchar                                                                       0x00159     20
-lcd_init                                                                          0x0016D     43
+main                                                                              0x00095     99
+scanKeypad                                                                        0x000F8     59
+startGame                                                                         0x00133     16
+_lcd_write_nibble_G100                                                            0x00143     20
+_lcd_write_data                                                                   0x00157     12
+lcd_gotoxy                                                                        0x00163     13
+lcd_clear                                                                         0x00170     10
+lcd_putchar                                                                       0x0017A     21
+lcd_puts                                                                          0x0018F     17
+lcd_init                                                                          0x001A0     43

@@ -26,6 +26,8 @@ Data Stack size         : 1024
 // Alphanumeric LCD functions
 #include <alcd.h>
 
+#include <delay.h>
+
 // Declare your global variables here
 char keypad[4][3] = {
     '1','2','3',
@@ -34,6 +36,7 @@ char keypad[4][3] = {
     '*','0','#'
 };
 char scanKeypad();
+void startGame();
 void main(void)
 {
 // Declare your local variables here
@@ -215,9 +218,9 @@ lcd_init(20);
 
 while (1)
       {
-      lcd_gotoxy(0,0);
-      lcd_putchar(scanKeypad());
-
+      startGame();
+      lcd_clear();
+      delay_ms(2000);
       }
 }
 
@@ -236,4 +239,12 @@ char scanKeypad() {
         }
     }
 
+}
+
+void startGame() {
+    lcd_gotoxy(3,1);
+    lcd_puts("press any key");
+    lcd_gotoxy(6,2);
+    lcd_puts("to start");
+    scanKeypad();
 }
