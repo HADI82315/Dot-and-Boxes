@@ -47,10 +47,20 @@ char initial_board[3][10] = {
 };
 char board[3][10];
 
-int scores[2] = {4,5}; 
+int directions[4][2] = {
+        {-1, -1},
+        {-1,  0},
+        { 0, -1},
+        { 0,  0}
+};
 
-int turn = 1;
-char symbol = '*';
+int scores[2] = {0,0}; 
+
+int turn = 0;
+char symbol;
+char flags[2] = {
+    'A','B'
+};
 
 char inputS[3] = {'-','-','\0'};
 int digits[2];
@@ -62,7 +72,7 @@ void startGame();
 
 void printBoard();
 
-void printScore();
+void printScores();
 
 void printInput();
 
@@ -75,6 +85,10 @@ void printError(int error);
 void getInput();
 
 bool checkInput();
+
+bool updateScore();
+
+bool gameOver();
 
 void main(void)
 {
@@ -255,14 +269,21 @@ TWCR=(0<<TWEA) | (0<<TWSTA) | (0<<TWSTO) | (0<<TWEN) | (0<<TWIE);
 lcd_init(20);
 }
 while (1)
-      {
+      {  
       startGame();
       printLCD();
-      symbol = (turn == 0) ? '*' : '#';
-      getInput();
-      board[digits[0] - 1][digits[1]] = symbol;
-      printBoard();
-      delay_ms(2000);
+      while (!gameOver()) {
+        symbol = (turn == 0) ? '*' : '#';
+        printTurn();
+        getInput();
+        board[digits[0] - 1][digits[1]] = symbol;
+        if (updateScore() == false ){
+            turn = 1 - turn;
+        } else {
+            printScores();
+        }
+        printBoard();
+        }
       }
 }
 
@@ -311,7 +332,7 @@ void printBoard() {
     lcd_gotoxy(0,0);
 }
 
-void printScore() {
+void printScores() {
     char buffer[6];
     
     lcd_gotoxy(14,0);
@@ -340,7 +361,7 @@ void printInput() {
 void printLCD () {
     lcd_clear();
     printBoard();
-    printScore();
+    printScores();
     printInput();
     printTurn();
     lcd_gotoxy(0,0);
@@ -349,6 +370,8 @@ void printLCD () {
 void printTurn() {
     lcd_gotoxy(12,turn);
     lcd_puts("->");
+    lcd_gotoxy(12,(1 - turn));
+    lcd_puts("  ");
     lcd_gotoxy(0,0);
 }
 
@@ -397,7 +420,8 @@ void getInput() {
     } while (scanKeypad() != '*');
     if (checkInput() != true) {
         goto get;
-    } 
+    }
+    inputS[0] = '-', inputS[1] = '-'; 
 }
 
 bool checkInput() {
@@ -419,3 +443,38 @@ bool checkInput() {
     return true;
 }
 
+bool updateScore() {
+    int i;
+    char r = digits[0] - 1;
+    char c = digits[1];
+    int nr;
+    int nc;
+    for (i = 0; i < 4; i++) {
+        nr = r + directions[i][0];
+        nc = c + directions[i][1];
+
+        if (nr >= 0 && nr < 2 && nc >= 0 && nc < 9) {
+            if (board[nr][nc]     == symbol &&
+                board[nr][nc + 1] == symbol &&
+                board[nr + 1][nc] == symbol &&
+                board[nr + 1][nc + 1] == symbol) {
+                scores[turn] += 1;
+                board[nr][nc] = board[nr][nc + 1] = board[nr + 1][nc] = board[nr + 1][nc + 1] = flags[turn];
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool gameOver() {
+    int i,j;
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 10; j++) {
+            if (board[i][j] == ' ') {
+                return false;
+            };
+        };
+    };
+    return true;
+}
