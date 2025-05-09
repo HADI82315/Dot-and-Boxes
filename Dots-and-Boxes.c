@@ -44,6 +44,8 @@ char board[3][10] = {
 
 int score1 = 0;
 int score2 = 0;
+char inputS[3] = {'-','-','\0'};
+int inputI;
 
 char scanKeypad();
 
@@ -53,7 +55,7 @@ void printBoard();
 
 void printScore();
 
-void printInput();
+void printInput(char inputS[]);
 
 void printError(int error);
 
@@ -240,6 +242,7 @@ while (1)
       startGame();
       printBoard();
       printScore();
+      printInput(inputS);
       delay_ms(2000);
       }
 }
@@ -297,6 +300,15 @@ void printScore() {
     sprintf(buffer, "P2=%d", score2);
     lcd_puts(buffer);
     
+    lcd_gotoxy(0,0);
+
+}
+
+void printInput(char inputS[]) {
+    lcd_gotoxy(15,3);
+    lcd_puts("N=");
+    lcd_gotoxy(17,3);
+    lcd_puts(inputS);
     lcd_gotoxy(0,0);
 
 }
