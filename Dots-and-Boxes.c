@@ -44,6 +44,10 @@ char board[3][10] = {
 
 int score1 = 4;
 int score2 = 5;
+
+int turn = 1;
+char symbol = '*';
+
 char inputS[3] = {'-','-','\0'};
 int inputI;
 
@@ -56,6 +60,8 @@ void printBoard();
 void printScore();
 
 void printInput();
+
+void printTurn();
 
 void printLCD();
 
@@ -243,10 +249,9 @@ while (1)
       {
       startGame();
       printLCD();
-      delay_ms(2000);
-      printError(1);
-      printLCD();
-      delay_ms(2000);
+      symbol = (turn == 1) ? '*' : '#';
+      delay_ms(1000);
+      
       }
 }
 
@@ -270,6 +275,8 @@ char scanKeypad() {
 
 void startGame() {
     lcd_clear();
+    PORTB = 0x00;
+    PORTC = 0x00;
     lcd_gotoxy(3,1);
     lcd_puts("press any key");
     lcd_gotoxy(6,2);
@@ -295,13 +302,13 @@ void printBoard() {
 void printScore() {
     char buffer[6];
     
-    lcd_gotoxy(15,0);
-    sprintf(buffer, "P1=%d", score1);
+    lcd_gotoxy(14,0);
+    sprintf(buffer, "*P1=%d", score1);
     lcd_puts(buffer);
     PORTB = score1;
     
-    lcd_gotoxy(15,1);
-    sprintf(buffer, "P2=%d", score2);
+    lcd_gotoxy(14,1);
+    sprintf(buffer, "#P2=%d", score2);
     lcd_puts(buffer);
     PORTC = score2;
     
@@ -323,6 +330,13 @@ void printLCD () {
     printBoard();
     printScore();
     printInput();
+    printTurn();
+    lcd_gotoxy(0,0);
+}
+
+void printTurn() {
+    lcd_gotoxy(12,turn);
+    lcd_puts("->");
     lcd_gotoxy(0,0);
 }
 

@@ -1,10 +1,12 @@
 RAM Allocation [bytes]
 Variable                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-keypad                                                                            0x0571      12
-board                                                                             0x057D      30
-inputS                                                                            0x059B       3
-_base_y                                                                           0x059E       4
+keypad                                                                            0x0574      12
+board                                                                             0x0580      30
+inputS                                                                            0x059E       3
+_base_y                                                                           0x05A1       4
+_lcd_y                                                                            0x05A5       1
+_lcd_maxx                                                                         0x05A6       1
 
 EEPROM Allocation [bytes]
 Variable                                                                          Address   Size
@@ -15,29 +17,29 @@ Variable                                                                        
 ------------------------------------------------------------------------------------------------
 score1                                                                            R4,R5        2
 score2                                                                            R6,R7        2
-inputI                                                                            R8,R9        2
-_lcd_x                                                                            R11          1
-_lcd_y                                                                            R10          1
-_lcd_maxx                                                                         R13          1
+turn                                                                              R8,R9        2
+symbol                                                                            R11          1
+inputI                                                                            R12,R13      2
+_lcd_x                                                                            R10          1
 
 FLASH Allocation [words]
 Function                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-main                                                                              0x000FE    101
-startGame                                                                         0x001A1     17
-printBoard                                                                        0x001B2     50
-printScore                                                                        0x001E4     31
-printLCD                                                                          0x00212      9
-printError                                                                        0x0021B     34
-_lcd_write_nibble_G100                                                            0x0023D     20
-_lcd_write_data                                                                   0x00251     12
-lcd_gotoxy                                                                        0x0025D     13
-lcd_clear                                                                         0x0026A     12
-lcd_putchar                                                                       0x00276     21
+main                                                                              0x00105    108
+startGame                                                                         0x001AF     21
+printBoard                                                                        0x001C4     50
+printScore                                                                        0x001F6     31
+printLCD                                                                          0x00223      6
+printTurn                                                                         0x00229     12
+_lcd_write_nibble_G100                                                            0x00235     20
+_lcd_write_data                                                                   0x00249     12
+lcd_gotoxy                                                                        0x00255     15
+lcd_clear                                                                         0x00264     13
+lcd_putchar                                                                       0x00271     26
 lcd_puts                                                                          0x0028B     17
-lcd_init                                                                          0x0029C     46
-put_buff_G101                                                                     0x002CA     64
-_print_G101                                                                       0x0030A    308
-sprintf                                                                           0x0043E     52
-strlen                                                                            0x00472     12
-strlenf                                                                           0x0047E     13
+lcd_init                                                                          0x0029C     47
+put_buff_G101                                                                     0x002CB     64
+_print_G101                                                                       0x0030B    308
+sprintf                                                                           0x0043F     52
+strlen                                                                            0x00473     12
+strlenf                                                                           0x0047F     13
