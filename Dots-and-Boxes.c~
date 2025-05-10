@@ -344,13 +344,13 @@ void printBoard() {
 void printScores() {
     char buffer[6];
     
-    lcd_gotoxy(14,0);
-    sprintf(buffer, "*P1=%d", scores[0]);
+    lcd_gotoxy(13,0);
+    sprintf(buffer, "A*P1=%d", scores[0]);
     lcd_puts(buffer);
     PORTB = scores[0];
     
-    lcd_gotoxy(14,1);
-    sprintf(buffer, "#P2=%d", scores[1]);
+    lcd_gotoxy(13,1);
+    sprintf(buffer, "B#P2=%d", scores[1]);
     lcd_puts(buffer);
     PORTC = scores[1];
     
@@ -377,9 +377,9 @@ void printLCD () {
 }
 
 void printTurn() {
-    lcd_gotoxy(12,turn);
+    lcd_gotoxy(11,turn);
     lcd_puts("->");
-    lcd_gotoxy(12,(1 - turn));
+    lcd_gotoxy(11,(1 - turn));
     lcd_puts("  ");
     lcd_gotoxy(0,0);
 }

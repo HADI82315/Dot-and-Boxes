@@ -2078,7 +2078,7 @@ _printInput:
 ; 0000 016D     lcd_puts(inputS);
 	LDI  R26,LOW(_inputS)
 	LDI  R27,HIGH(_inputS)
-	RJMP _0x208000A
+	RJMP _0x2080009
 ; 0000 016E     lcd_gotoxy(0,0);
 ; 0000 016F 
 ; 0000 0170 }
@@ -2105,7 +2105,7 @@ _printLCD:
 ; 0000 0177     printTurn();
 	RCALL _printTurn
 ; 0000 0178     lcd_gotoxy(0,0);
-	RJMP _0x2080009
+	RJMP _0x2080008
 ; 0000 0179 }
 ; .FEND
 ;
@@ -2130,10 +2130,10 @@ _printTurn:
 	RCALL _lcd_gotoxy
 ; 0000 017F     lcd_puts("  ");
 	__POINTW2MN _0x27,3
-_0x208000A:
+_0x2080009:
 	CALL _lcd_puts
 ; 0000 0180     lcd_gotoxy(0,0);
-_0x2080009:
+_0x2080008:
 	LDI  R30,LOW(0)
 	CALL SUBOPT_0x3
 ; 0000 0181 }
@@ -2306,7 +2306,7 @@ _checkInput:
 _0x38:
 ; 0000 01B6         printError(1);
 	LDI  R26,LOW(1)
-	RJMP _0x2080008
+	RJMP _0x2080007
 ; 0000 01B7         return false;
 ; 0000 01B8     }
 ; 0000 01B9     digits[0] = (inputS[0] - '0');
@@ -2345,7 +2345,7 @@ _0x36:
 _0x3B:
 ; 0000 01BD         printError(2);
 	LDI  R26,LOW(2)
-	RJMP _0x2080008
+	RJMP _0x2080007
 ; 0000 01BE         return false;
 ; 0000 01BF     }
 ; 0000 01C0     if (board[digits[0] - 1][digits[1]] != ' ') {
@@ -2359,7 +2359,7 @@ _0x3A:
 	BREQ _0x3D
 ; 0000 01C1         printError(3);
 	LDI  R26,LOW(3)
-_0x2080008:
+_0x2080007:
 	LDI  R27,0
 	RCALL _printError
 ; 0000 01C2         return false;
@@ -2388,14 +2388,18 @@ _updateScore:
 ; 0000 01CA     char c = digits[1];
 ; 0000 01CB     int nr;
 ; 0000 01CC     int nc;
-; 0000 01CD     for (i = 0; i < 4; i++) {
-	SBIW R28,2
+; 0000 01CD     bool output = false;
+; 0000 01CE     for (i = 0; i < 4; i++) {
+	SBIW R28,3
+	LDI  R30,LOW(0)
+	ST   Y,R30
 	CALL __SAVELOCR6
 ;	i -> R16,R17
 ;	r -> R19
 ;	c -> R18
 ;	nr -> R20,R21
-;	nc -> Y+6
+;	nc -> Y+7
+;	output -> Y+6
 	LDS  R30,_digits
 	SUBI R30,LOW(1)
 	MOV  R19,R30
@@ -2406,7 +2410,7 @@ _0x3F:
 	__CPWRN 16,17,4
 	BRLT PC+2
 	RJMP _0x40
-; 0000 01CE         nr = r + directions[i][0];
+; 0000 01CF         nr = r + directions[i][0];
 	MOV  R0,R19
 	CALL SUBOPT_0xA
 	ADD  R26,R30
@@ -2415,7 +2419,7 @@ _0x3F:
 	ADD  R30,R0
 	ADC  R31,R1
 	MOVW R20,R30
-; 0000 01CF         nc = c + directions[i][1];
+; 0000 01D0         nc = c + directions[i][1];
 	MOV  R0,R18
 	CALL SUBOPT_0xA
 	ADD  R26,R30
@@ -2424,28 +2428,28 @@ _0x3F:
 	CALL __GETW1P
 	ADD  R30,R0
 	ADC  R31,R1
-	STD  Y+6,R30
-	STD  Y+6+1,R31
-; 0000 01D0 
-; 0000 01D1         if (nr >= 0 && nr < 2 && nc >= 0 && nc < 9) {
+	STD  Y+7,R30
+	STD  Y+7+1,R31
+; 0000 01D1 
+; 0000 01D2         if (nr >= 0 && nr < 2 && nc >= 0 && nc < 9) {
 	TST  R21
 	BRMI _0x42
 	__CPWRN 20,21,2
 	BRGE _0x42
-	LDD  R26,Y+7
+	LDD  R26,Y+8
 	TST  R26
 	BRMI _0x42
-	LDD  R26,Y+6
-	LDD  R27,Y+6+1
+	LDD  R26,Y+7
+	LDD  R27,Y+7+1
 	SBIW R26,9
 	BRLT _0x43
 _0x42:
 	RJMP _0x41
 _0x43:
-; 0000 01D2             if ((board[nr][nc]     == symbol || board[nr][nc]     == flags[turn]) &&
-; 0000 01D3                 (board[nr][nc + 1] == symbol || board[nr][nc + 1] == flags[turn]) &&
-; 0000 01D4                 (board[nr + 1][nc] == symbol || board[nr + 1][nc] == flags[turn]) &&
-; 0000 01D5                 (board[nr + 1][nc + 1] == symbol || board[nr + 1][nc + 1] == flags[turn])) {
+; 0000 01D3             if ((board[nr][nc]     == symbol || board[nr][nc]     == flags[turn]) &&
+; 0000 01D4                 (board[nr][nc + 1] == symbol || board[nr][nc + 1] == flags[turn]) &&
+; 0000 01D5                 (board[nr + 1][nc] == symbol || board[nr + 1][nc] == flags[turn]) &&
+; 0000 01D6                 (board[nr + 1][nc + 1] == symbol || board[nr + 1][nc + 1] == flags[turn])) {
 	CALL SUBOPT_0xB
 	MOVW R22,R30
 	CALL SUBOPT_0xC
@@ -2484,7 +2488,7 @@ _0x4C:
 _0x47:
 	RJMP _0x44
 _0x4E:
-; 0000 01D6                 scores[turn] += 1;
+; 0000 01D7                 scores[turn] += 1;
 	MOVW R30,R4
 	LDI  R26,LOW(_scores)
 	LDI  R27,HIGH(_scores)
@@ -2493,32 +2497,32 @@ _0x4E:
 	ADD  R26,R30
 	ADC  R27,R31
 	CALL SUBOPT_0x11
-; 0000 01D7                 board[nr][nc] = board[nr][nc + 1] = board[nr + 1][nc] = board[nr + 1][nc + 1] = flags[turn];
+; 0000 01D8                 board[nr][nc] = board[nr][nc + 1] = board[nr + 1][nc] = board[nr + 1][nc + 1] = flags[turn];
 	CALL SUBOPT_0xB
 	MOVW R0,R30
-	LDD  R26,Y+6
-	LDD  R27,Y+6+1
+	LDD  R26,Y+7
+	LDD  R27,Y+7+1
 	ADD  R30,R26
 	ADC  R31,R27
 	PUSH R31
 	PUSH R30
 	MOVW R26,R0
-	LDD  R30,Y+6
-	LDD  R31,Y+6+1
+	LDD  R30,Y+7
+	LDD  R31,Y+7+1
 	ADIW R30,1
 	ADD  R30,R26
 	ADC  R31,R27
 	MOVW R24,R30
 	CALL SUBOPT_0x12
-	LDD  R26,Y+6
-	LDD  R27,Y+6+1
+	LDD  R26,Y+7
+	LDD  R27,Y+7+1
 	ADD  R30,R26
 	ADC  R31,R27
 	MOVW R22,R30
 	CALL SUBOPT_0x12
 	MOVW R26,R30
-	LDD  R30,Y+6
-	LDD  R31,Y+6+1
+	LDD  R30,Y+7
+	LDD  R31,Y+7+1
 	ADIW R30,1
 	ADD  R30,R26
 	ADC  R31,R27
@@ -2537,32 +2541,31 @@ _0x4E:
 	POP  R26
 	POP  R27
 	ST   X,R30
-; 0000 01D8                 return true;
+; 0000 01D9                 output = true;
 	LDI  R30,LOW(1)
-	RJMP _0x2080007
-; 0000 01D9             }
-; 0000 01DA         }
+	STD  Y+6,R30
+; 0000 01DA             }
+; 0000 01DB         }
 _0x44:
-; 0000 01DB     }
+; 0000 01DC     }
 _0x41:
 	__ADDWRN 16,17,1
 	RJMP _0x3F
 _0x40:
-; 0000 01DC     return false;
-	LDI  R30,LOW(0)
-_0x2080007:
+; 0000 01DD     return output;
+	LDD  R30,Y+6
 	CALL __LOADLOCR6
-	ADIW R28,8
+	ADIW R28,9
 	RET
-; 0000 01DD }
+; 0000 01DE }
 ; .FEND
 ;
 ;bool gameOver() {
-; 0000 01DF _Bool gameOver() {
+; 0000 01E0 _Bool gameOver() {
 _gameOver:
 ; .FSTART _gameOver
-; 0000 01E0     int i,j;
-; 0000 01E1     for (i = 0; i < 4; i++) {
+; 0000 01E1     int i,j;
+; 0000 01E2     for (i = 0; i < 4; i++) {
 	CALL __SAVELOCR4
 ;	i -> R16,R17
 ;	j -> R18,R19
@@ -2570,57 +2573,57 @@ _gameOver:
 _0x50:
 	__CPWRN 16,17,4
 	BRGE _0x51
-; 0000 01E2         for (j = 0; j < 10; j++) {
+; 0000 01E3         for (j = 0; j < 10; j++) {
 	__GETWRN 18,19,0
 _0x53:
 	__CPWRN 18,19,10
 	BRGE _0x54
-; 0000 01E3             if (board[i][j] == ' ') {
+; 0000 01E4             if (board[i][j] == ' ') {
 	CALL SUBOPT_0x6
 	CPI  R26,LOW(0x20)
 	BRNE _0x55
-; 0000 01E4                 return false;
+; 0000 01E5                 return false;
 	LDI  R30,LOW(0)
 	RJMP _0x2080006
-; 0000 01E5             };
+; 0000 01E6             };
 _0x55:
-; 0000 01E6         };
+; 0000 01E7         };
 	__ADDWRN 18,19,1
 	RJMP _0x53
 _0x54:
-; 0000 01E7     };
+; 0000 01E8     };
 	__ADDWRN 16,17,1
 	RJMP _0x50
 _0x51:
-; 0000 01E8     return true;
+; 0000 01E9     return true;
 	LDI  R30,LOW(1)
 _0x2080006:
 	CALL __LOADLOCR4
 	ADIW R28,4
 	RET
-; 0000 01E9 }
+; 0000 01EA }
 ; .FEND
 ;
 ;void printWinner() {
-; 0000 01EB void printWinner() {
+; 0000 01EC void printWinner() {
 _printWinner:
 ; .FSTART _printWinner
-; 0000 01EC     lcd_clear();
+; 0000 01ED     lcd_clear();
 	RCALL _lcd_clear
-; 0000 01ED     lcd_gotoxy(4,0);
+; 0000 01EE     lcd_gotoxy(4,0);
 	LDI  R30,LOW(4)
 	CALL SUBOPT_0x3
-; 0000 01EE     if (scores[0] > scores[1]) {
+; 0000 01EF     if (scores[0] > scores[1]) {
 	CALL SUBOPT_0x8
 	LDS  R26,_scores
 	LDS  R27,_scores+1
 	CP   R30,R26
 	CPC  R31,R27
 	BRGE _0x56
-; 0000 01EF         lcd_puts("P1 is winner!");
+; 0000 01F0         lcd_puts("P1 is winner!");
 	__POINTW2MN _0x57,0
 	RJMP _0x5C
-; 0000 01F0     } else if (scores[0] < scores[1]) {
+; 0000 01F1     } else if (scores[0] < scores[1]) {
 _0x56:
 	CALL SUBOPT_0x8
 	LDS  R26,_scores
@@ -2628,34 +2631,34 @@ _0x56:
 	CP   R26,R30
 	CPC  R27,R31
 	BRGE _0x59
-; 0000 01F1         lcd_puts("P2 is winner!");
+; 0000 01F2         lcd_puts("P2 is winner!");
 	__POINTW2MN _0x57,14
 	RJMP _0x5C
-; 0000 01F2     } else {
+; 0000 01F3     } else {
 _0x59:
-; 0000 01F3         lcd_puts(" match tied!");
+; 0000 01F4         lcd_puts(" match tied!");
 	__POINTW2MN _0x57,28
 _0x5C:
 	RCALL _lcd_puts
-; 0000 01F4     }
-; 0000 01F5     lcd_gotoxy(4,1);
+; 0000 01F5     }
+; 0000 01F6     lcd_gotoxy(4,1);
 	LDI  R30,LOW(4)
 	CALL SUBOPT_0x4
-; 0000 01F6     lcd_puts("press any key");
+; 0000 01F7     lcd_puts("press any key");
 	__POINTW2MN _0x57,41
 	RCALL _lcd_puts
-; 0000 01F7     lcd_gotoxy(5,2);
+; 0000 01F8     lcd_gotoxy(5,2);
 	LDI  R30,LOW(5)
 	CALL SUBOPT_0x5
-; 0000 01F8     lcd_puts("to continue");
+; 0000 01F9     lcd_puts("to continue");
 	__POINTW2MN _0x57,55
 _0x2080005:
 	RCALL _lcd_puts
-; 0000 01F9     scanKeypad();
+; 0000 01FA     scanKeypad();
 	RCALL _scanKeypad
-; 0000 01FA     lcd_clear();
+; 0000 01FB     lcd_clear();
 	RCALL _lcd_clear
-; 0000 01FB }
+; 0000 01FC }
 	RET
 ; .FEND
 
@@ -3502,8 +3505,8 @@ SUBOPT_0xB:
 
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 4 TIMES, CODE SIZE REDUCTION:3 WORDS
 SUBOPT_0xC:
-	LDD  R26,Y+6
-	LDD  R27,Y+6+1
+	LDD  R26,Y+7
+	LDD  R27,Y+7+1
 	ADD  R26,R30
 	ADC  R27,R31
 	RET
@@ -3522,8 +3525,8 @@ SUBOPT_0xD:
 ;OPTIMIZER ADDED SUBROUTINE, CALLED 2 TIMES, CODE SIZE REDUCTION:1 WORDS
 SUBOPT_0xE:
 	MOVW R26,R22
-	LDD  R30,Y+6
-	LDD  R31,Y+6+1
+	LDD  R30,Y+7
+	LDD  R31,Y+7+1
 	ADIW R30,1
 	ADD  R26,R30
 	ADC  R27,R31
@@ -3550,8 +3553,8 @@ SUBOPT_0x10:
 	SUBI R30,LOW(-_board)
 	SBCI R31,HIGH(-_board)
 	MOVW R26,R30
-	LDD  R30,Y+6
-	LDD  R31,Y+6+1
+	LDD  R30,Y+7
+	LDD  R31,Y+7+1
 	ADIW R30,1
 	ADD  R26,R30
 	ADC  R27,R31

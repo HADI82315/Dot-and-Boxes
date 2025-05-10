@@ -458,6 +458,7 @@ bool updateScore() {
     char c = digits[1];
     int nr;
     int nc;
+    bool output = false;
     for (i = 0; i < 4; i++) {
         nr = r + directions[i][0];
         nc = c + directions[i][1];
@@ -469,11 +470,11 @@ bool updateScore() {
                 (board[nr + 1][nc + 1] == symbol || board[nr + 1][nc + 1] == flags[turn])) {
                 scores[turn] += 1;
                 board[nr][nc] = board[nr][nc + 1] = board[nr + 1][nc] = board[nr + 1][nc + 1] = flags[turn];
-                return true;
+                output = true;
             }
         }
     }
-    return false;
+    return output;
 }
 
 bool gameOver() {

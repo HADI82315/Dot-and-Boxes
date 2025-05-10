@@ -1189,16 +1189,18 @@ _0x37:
 ; 0000 01CA     char c = digits[1];
 ; 0000 01CB     int nr;
 ; 0000 01CC     int nc;
-; 0000 01CD     for (i = 0; i < 4; i++) {
+; 0000 01CD     bool output = false;
+; 0000 01CE     for (i = 0; i < 4; i++) {
 ;PCODE: $00000291 VOL: 0
 ;PCODE: $00000292 VOL: 0
+;PCODE: $00000293 VOL: 0
+;PCODE: $00000294 VOL: 0
 ;	i -> R16,R17
 ;	r -> R19
 ;	c -> R18
 ;	nr -> R20,R21
-;	nc -> Y+6
-;PCODE: $00000293 VOL: 0
-;PCODE: $00000294 VOL: 0
+;	nc -> Y+7
+;	output -> Y+6
 ;PCODE: $00000295 VOL: 0
 ;PCODE: $00000296 VOL: 0
 ;PCODE: $00000297 VOL: 0
@@ -1212,9 +1214,9 @@ _0x37:
 ;PCODE: $0000029F VOL: 0
 ;PCODE: $000002A0 VOL: 0
 ;PCODE: $000002A1 VOL: 0
-; 0000 01CE         nr = r + directions[i][0];
 ;PCODE: $000002A2 VOL: 0
 ;PCODE: $000002A3 VOL: 0
+; 0000 01CF         nr = r + directions[i][0];
 ;PCODE: $000002A4 VOL: 0
 ;PCODE: $000002A5 VOL: 0
 ;PCODE: $000002A6 VOL: 0
@@ -1223,9 +1225,9 @@ _0x37:
 ;PCODE: $000002A9 VOL: 0
 ;PCODE: $000002AA VOL: 0
 ;PCODE: $000002AB VOL: 0
-; 0000 01CF         nc = c + directions[i][1];
 ;PCODE: $000002AC VOL: 0
 ;PCODE: $000002AD VOL: 0
+; 0000 01D0         nc = c + directions[i][1];
 ;PCODE: $000002AE VOL: 0
 ;PCODE: $000002AF VOL: 0
 ;PCODE: $000002B0 VOL: 0
@@ -1235,10 +1237,10 @@ _0x37:
 ;PCODE: $000002B4 VOL: 0
 ;PCODE: $000002B5 VOL: 0
 ;PCODE: $000002B6 VOL: 0
-; 0000 01D0 
-; 0000 01D1         if (nr >= 0 && nr < 2 && nc >= 0 && nc < 9) {
 ;PCODE: $000002B7 VOL: 0
 ;PCODE: $000002B8 VOL: 0
+; 0000 01D1 
+; 0000 01D2         if (nr >= 0 && nr < 2 && nc >= 0 && nc < 9) {
 ;PCODE: $000002B9 VOL: 0
 ;PCODE: $000002BA VOL: 0
 ;PCODE: $000002BB VOL: 0
@@ -1252,12 +1254,12 @@ _0x37:
 ;PCODE: $000002C3 VOL: 0
 ;PCODE: $000002C4 VOL: 0
 ;PCODE: $000002C5 VOL: 0
-; 0000 01D2             if ((board[nr][nc]     == symbol || board[nr][nc]     == flags[turn]) &&
-; 0000 01D3                 (board[nr][nc + 1] == symbol || board[nr][nc + 1] == flags[turn]) &&
-; 0000 01D4                 (board[nr + 1][nc] == symbol || board[nr + 1][nc] == flags[turn]) &&
-; 0000 01D5                 (board[nr + 1][nc + 1] == symbol || board[nr + 1][nc + 1] == flags[turn])) {
 ;PCODE: $000002C6 VOL: 0
 ;PCODE: $000002C7 VOL: 0
+; 0000 01D3             if ((board[nr][nc]     == symbol || board[nr][nc]     == flags[turn]) &&
+; 0000 01D4                 (board[nr][nc + 1] == symbol || board[nr][nc + 1] == flags[turn]) &&
+; 0000 01D5                 (board[nr + 1][nc] == symbol || board[nr + 1][nc] == flags[turn]) &&
+; 0000 01D6                 (board[nr + 1][nc + 1] == symbol || board[nr + 1][nc + 1] == flags[turn])) {
 ;PCODE: $000002C8 VOL: 0
 ;PCODE: $000002C9 VOL: 0
 ;PCODE: $000002CA VOL: 0
@@ -1352,17 +1354,17 @@ _0x37:
 ;PCODE: $00000323 VOL: 0
 ;PCODE: $00000324 VOL: 0
 ;PCODE: $00000325 VOL: 0
-; 0000 01D6                 scores[turn] += 1;
 ;PCODE: $00000326 VOL: 0
 ;PCODE: $00000327 VOL: 0
+; 0000 01D7                 scores[turn] += 1;
 ;PCODE: $00000328 VOL: 0
 ;PCODE: $00000329 VOL: 0
 ;PCODE: $0000032A VOL: 0
 ;PCODE: $0000032B VOL: 0
 ;PCODE: $0000032C VOL: 0
-; 0000 01D7                 board[nr][nc] = board[nr][nc + 1] = board[nr + 1][nc] = board[nr + 1][nc + 1] = flags[turn];
 ;PCODE: $0000032D VOL: 0
 ;PCODE: $0000032E VOL: 0
+; 0000 01D8                 board[nr][nc] = board[nr][nc + 1] = board[nr + 1][nc] = board[nr + 1][nc + 1] = flags[turn];
 ;PCODE: $0000032F VOL: 0
 ;PCODE: $00000330 VOL: 0
 ;PCODE: $00000331 VOL: 0
@@ -1402,35 +1404,35 @@ _0x37:
 ;PCODE: $00000353 VOL: 0
 ;PCODE: $00000354 VOL: 0
 ;PCODE: $00000355 VOL: 0
-; 0000 01D8                 return true;
 ;PCODE: $00000356 VOL: 0
 ;PCODE: $00000357 VOL: 0
+; 0000 01D9                 output = true;
 ;PCODE: $00000358 VOL: 0
 ;PCODE: $00000359 VOL: 0
-; 0000 01D9             }
-; 0000 01DA         }
+; 0000 01DA             }
+; 0000 01DB         }
 ;PCODE: $0000035A VOL: 0
-; 0000 01DB     }
+; 0000 01DC     }
 ;PCODE: $0000035B VOL: 0
 ;PCODE: $0000035C VOL: 0
 ;PCODE: $0000035D VOL: 0
 ;PCODE: $0000035E VOL: 0
 ;PCODE: $0000035F VOL: 0
 ;PCODE: $00000360 VOL: 0
-; 0000 01DC     return false;
+; 0000 01DD     return output;
 ;PCODE: $00000361 VOL: 0
 ;PCODE: $00000362 VOL: 0
 ;PCODE: $00000363 VOL: 0
 ;PCODE: $00000364 VOL: 0
-; 0000 01DD }
+; 0000 01DE }
 ;PCODE: $00000365 VOL: 0
 ;
 ;bool gameOver() {
-; 0000 01DF _Bool gameOver() {
+; 0000 01E0 _Bool gameOver() {
 ;PCODE: $00000366 VOL: 0
 ;PCODE: $00000367 VOL: 0
-; 0000 01E0     int i,j;
-; 0000 01E1     for (i = 0; i < 4; i++) {
+; 0000 01E1     int i,j;
+; 0000 01E2     for (i = 0; i < 4; i++) {
 ;PCODE: $00000368 VOL: 0
 ;	i -> R16,R17
 ;	j -> R18,R19
@@ -1443,7 +1445,7 @@ _0x37:
 ;PCODE: $0000036F VOL: 0
 ;PCODE: $00000370 VOL: 0
 ;PCODE: $00000371 VOL: 0
-; 0000 01E2         for (j = 0; j < 10; j++) {
+; 0000 01E3         for (j = 0; j < 10; j++) {
 ;PCODE: $00000372 VOL: 0
 ;PCODE: $00000373 VOL: 0
 ;PCODE: $00000374 VOL: 0
@@ -1453,7 +1455,7 @@ _0x37:
 ;PCODE: $00000378 VOL: 0
 ;PCODE: $00000379 VOL: 0
 ;PCODE: $0000037A VOL: 0
-; 0000 01E3             if (board[i][j] == ' ') {
+; 0000 01E4             if (board[i][j] == ' ') {
 ;PCODE: $0000037B VOL: 0
 ;PCODE: $0000037C VOL: 0
 ;PCODE: $0000037D VOL: 0
@@ -1461,55 +1463,55 @@ _0x37:
 ;PCODE: $0000037F VOL: 0
 ;PCODE: $00000380 VOL: 0
 ;PCODE: $00000381 VOL: 0
-; 0000 01E4                 return false;
+; 0000 01E5                 return false;
 ;PCODE: $00000382 VOL: 0
 ;PCODE: $00000383 VOL: 0
 ;PCODE: $00000384 VOL: 0
 ;PCODE: $00000385 VOL: 0
-; 0000 01E5             };
+; 0000 01E6             };
 ;PCODE: $00000386 VOL: 0
-; 0000 01E6         };
+; 0000 01E7         };
 ;PCODE: $00000387 VOL: 0
 ;PCODE: $00000388 VOL: 0
 ;PCODE: $00000389 VOL: 0
 ;PCODE: $0000038A VOL: 0
 ;PCODE: $0000038B VOL: 0
-; 0000 01E7     };
+; 0000 01E8     };
 ;PCODE: $0000038C VOL: 0
 ;PCODE: $0000038D VOL: 0
 ;PCODE: $0000038E VOL: 0
 ;PCODE: $0000038F VOL: 0
 ;PCODE: $00000390 VOL: 0
-; 0000 01E8     return true;
+; 0000 01E9     return true;
 ;PCODE: $00000391 VOL: 0
 ;PCODE: $00000392 VOL: 0
 ;PCODE: $00000393 VOL: 0
 ;PCODE: $00000394 VOL: 0
-; 0000 01E9 }
+; 0000 01EA }
 ;PCODE: $00000395 VOL: 0
 ;
 ;void printWinner() {
-; 0000 01EB void printWinner() {
+; 0000 01EC void printWinner() {
 ;PCODE: $00000396 VOL: 0
 ;PCODE: $00000397 VOL: 0
-; 0000 01EC     lcd_clear();
+; 0000 01ED     lcd_clear();
 ;PCODE: $00000398 VOL: 0
-; 0000 01ED     lcd_gotoxy(4,0);
+; 0000 01EE     lcd_gotoxy(4,0);
 ;PCODE: $00000399 VOL: 0
 ;PCODE: $0000039A VOL: 0
 ;PCODE: $0000039B VOL: 0
 ;PCODE: $0000039C VOL: 0
-; 0000 01EE     if (scores[0] > scores[1]) {
+; 0000 01EF     if (scores[0] > scores[1]) {
 ;PCODE: $0000039D VOL: 0
 ;PCODE: $0000039E VOL: 0
 ;PCODE: $0000039F VOL: 0
 ;PCODE: $000003A0 VOL: 0
 ;PCODE: $000003A1 VOL: 0
-; 0000 01EF         lcd_puts("P1 is winner!");
+; 0000 01F0         lcd_puts("P1 is winner!");
 ;PCODE: $000003A2 VOL: 0
 ;PCODE: $000003A3 VOL: 0
 ;PCODE: $000003A4 VOL: 0
-; 0000 01F0     } else if (scores[0] < scores[1]) {
+; 0000 01F1     } else if (scores[0] < scores[1]) {
 ;PCODE: $000003A5 VOL: 0
 ;PCODE: $000003A6 VOL: 0
 ;PCODE: $000003A7 VOL: 0
@@ -1517,43 +1519,43 @@ _0x37:
 ;PCODE: $000003A9 VOL: 0
 ;PCODE: $000003AA VOL: 0
 ;PCODE: $000003AB VOL: 0
-; 0000 01F1         lcd_puts("P2 is winner!");
+; 0000 01F2         lcd_puts("P2 is winner!");
 ;PCODE: $000003AC VOL: 0
 ;PCODE: $000003AD VOL: 0
 ;PCODE: $000003AE VOL: 0
-; 0000 01F2     } else {
+; 0000 01F3     } else {
 ;PCODE: $000003AF VOL: 0
 ;PCODE: $000003B0 VOL: 0
-; 0000 01F3         lcd_puts(" match tied!");
+; 0000 01F4         lcd_puts(" match tied!");
 ;PCODE: $000003B1 VOL: 0
 ;PCODE: $000003B2 VOL: 0
 ;PCODE: $000003B3 VOL: 0
-; 0000 01F4     }
+; 0000 01F5     }
 ;PCODE: $000003B4 VOL: 0
 ;PCODE: $000003B5 VOL: 0
-; 0000 01F5     lcd_gotoxy(4,1);
+; 0000 01F6     lcd_gotoxy(4,1);
 ;PCODE: $000003B6 VOL: 0
 ;PCODE: $000003B7 VOL: 0
 ;PCODE: $000003B8 VOL: 0
 ;PCODE: $000003B9 VOL: 0
-; 0000 01F6     lcd_puts("press any key");
+; 0000 01F7     lcd_puts("press any key");
 ;PCODE: $000003BA VOL: 0
 ;PCODE: $000003BB VOL: 0
 ;PCODE: $000003BC VOL: 0
-; 0000 01F7     lcd_gotoxy(5,2);
+; 0000 01F8     lcd_gotoxy(5,2);
 ;PCODE: $000003BD VOL: 0
 ;PCODE: $000003BE VOL: 0
 ;PCODE: $000003BF VOL: 0
 ;PCODE: $000003C0 VOL: 0
-; 0000 01F8     lcd_puts("to continue");
+; 0000 01F9     lcd_puts("to continue");
 ;PCODE: $000003C1 VOL: 0
 ;PCODE: $000003C2 VOL: 0
 ;PCODE: $000003C3 VOL: 0
-; 0000 01F9     scanKeypad();
+; 0000 01FA     scanKeypad();
 ;PCODE: $000003C4 VOL: 0
-; 0000 01FA     lcd_clear();
+; 0000 01FB     lcd_clear();
 ;PCODE: $000003C5 VOL: 0
-; 0000 01FB }
+; 0000 01FC }
 ;PCODE: $000003C6 VOL: 0
 ;PCODE: $000003C7 VOL: 0
 
