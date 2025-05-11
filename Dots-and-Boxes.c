@@ -92,6 +92,10 @@ bool gameOver();
 
 void printWinner();
 
+void flashing(int nr,int nc);
+
+void printBlock(int nr,int nc);
+
 void main(void)
 {
 {
@@ -281,8 +285,6 @@ while (1)
             board[digits[0] - 1][digits[1]] = symbol;
             if (updateScore() == false ){
                 turn = 1 - turn;
-            } else {
-                printScores();
             }
             printBoard();
       }
@@ -469,7 +471,10 @@ bool updateScore() {
                 (board[nr + 1][nc] == symbol || board[nr + 1][nc] == flags[turn]) &&
                 (board[nr + 1][nc + 1] == symbol || board[nr + 1][nc + 1] == flags[turn])) {
                 scores[turn] += 1;
+                flashing(nr,nc);
                 board[nr][nc] = board[nr][nc + 1] = board[nr + 1][nc] = board[nr + 1][nc + 1] = flags[turn];
+                printBlock(nr,nc);
+                printScores();
                 output = true;
             }
         }
@@ -505,4 +510,30 @@ void printWinner() {
     lcd_puts("to continue");
     scanKeypad();
     lcd_clear();
+}
+
+void flashing(int nr,int nc) {
+    int i;
+    for (i = 0; i < 3; i++) {
+        printBlock(nr,nc);
+    
+        delay_ms(300);
+    
+        lcd_gotoxy(nc + 1,nr + 1);
+        lcd_puts("  ");
+        lcd_gotoxy(nc + 1,nr + 1 + 1);
+        lcd_puts("  ");
+        delay_ms(300);
+    }
+
+    lcd_gotoxy(0,0);
+}
+
+void printBlock(int nr,int nc) {
+     lcd_gotoxy(nc + 1,nr + 1);
+     lcd_putchar(board[nr][nc]);
+     lcd_putchar(board[nr][nc + 1]);
+     lcd_gotoxy(nc + 1,nr + 1 + 1);
+     lcd_putchar(board[nr + 1][nc]);
+     lcd_putchar(board[nr + 1][nc + 1]);
 }
